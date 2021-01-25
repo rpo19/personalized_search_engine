@@ -92,8 +92,6 @@ def main(config_path, force_profile):
 
     get_user_tweets(es, config)
 
-    get_users_profile(es, config)
-
     get_users_profile(es, config, force=force_profile)
 
 
