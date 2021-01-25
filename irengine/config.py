@@ -4,7 +4,7 @@ class Config():
     def __init__(self):
         self.config = {}
 
-    def load_config(self, path="irconfig", output_format='yaml'):
+    def load_config(self, path, output_format='yaml'):
         config_processor = ConfigProcessor()
         filters = () # can choose to output only specific keys
         exclude_keys = () # can choose to remove specific keys

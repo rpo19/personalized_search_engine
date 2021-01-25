@@ -3,36 +3,43 @@ import irengine.config
 import irengine.secrets
 import tweepy
 from elasticsearch import Elasticsearch
+import click
 
-config = irengine.config.Config().load_config().get_config()
+@click.command()
+@click.option('-c', '--config-path', default='irconfig/local', help='Config path')
+def main(config_path):
+    config = irengine.config.Config().load_config(path=config_path).get_config()
 
-es = Elasticsearch(config["elasticsearch_hosts"])
+    es = Elasticsearch(config["elasticsearch_hosts"])
 
-auth = tweepy.OAuthHandler(irengine.secrets.consumer_key,
-            irengine.secrets.consumer_secret)
-auth.set_access_token(irengine.secrets.access_token,
-            irengine.secrets.access_secret)
+    auth = tweepy.OAuthHandler(irengine.secrets.consumer_key,
+                irengine.secrets.consumer_secret)
+    auth.set_access_token(irengine.secrets.access_token,
+                irengine.secrets.access_secret)
 
-api = tweepy.API(auth)
+    api = tweepy.API(auth)
 
-# index creation
-for index in config['elasticsearch_indices']:
-    if not es.indices.exists(index['name']):
-        print("Creating index", index['name'])
-        es.indices.create(index['name'], body=index['body'])
+    # index creation
+    for index in config['elasticsearch_indices']:
+        if not es.indices.exists(index['name']):
+            print("Creating index", index['name'])
+            es.indices.create(index['name'], body=index['body'])
 
-for user in config['users']:
-    username = user['name']
-    count = user['count']
+    for user in config['users']:
+        username = user['name']
+        count = user['count']
 
-    rescount = es.count(index=config['elasticsearch_usertweets_index'],
-        body={"query":{"match":{"user.screen_name":user['name']}}})
+        rescount = es.count(index=config['elasticsearch_usertweets_index'],
+            body={"query":{"match":{"user.screen_name":user['name']}}})
 
-    num = rescount['count']
+        num = rescount['count']
 
-    if num < user['count']:
-        print('Getting tweets for', user['name'])
-        
-        for tweet in utils.getTweetsFromUser(api, username, count=count):
-            res = es.index(index=config['elasticsearch_usertweets_index'],
-                id=tweet.id_str,body=tweet._json)
+        if num < user['count']:
+            print('Getting tweets for', user['name'])
+
+            for tweet in utils.getTweetsFromUser(api, username, count=count):
+                res = es.index(index=config['elasticsearch_usertweets_index'],
+                    id=tweet.id_str,body=tweet._json)
+
+if __name__ == '__main__':
+    main()

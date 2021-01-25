@@ -1,5 +1,4 @@
-elasticsearch_hosts:
-  - http://localhost:9200
+elasticsearch_hosts: []
 elasticsearch_usertweets_index: usertweets
 elasticsearch_user_index: user
 elasticsearch_indices:
