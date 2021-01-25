@@ -5,6 +5,33 @@ import tweepy
 from elasticsearch import Elasticsearch
 import click
 
+def create_indices(es, config):
+    for index in config['elasticsearch_indices'].values():
+        if not es.indices.exists(index['name']):
+            print("Creating index", index['name'])
+            es.indices.create(index['name'], body=index['body'])
+
+def get_user_tweets(es, config):
+    for user in config['users']:
+        username = user['name']
+        count = user['count']
+
+        rescount = es.count(
+            index=config['elasticsearch_indices']['usertweets']['name'],
+            body={"query":{"match":{"user.screen_name":user['name']}}})
+
+        num = rescount['count']
+
+        if num < user['count']:
+            print('Getting tweets for', user['name'])
+
+            for tweet in utils.getTweetsFromUser(api, username, count=count):
+                res = es.index(
+                    index=config['elasticsearch_indices']['usertweets']['name'],
+                    id=tweet.id_str,body=tweet._json)
+
+
+
 @click.command()
 @click.option('-c', '--config-path', default='irconfig/local', help='Config path')
 def main(config_path):
@@ -19,27 +46,12 @@ def main(config_path):
 
     api = tweepy.API(auth)
 
-    # index creation
-    for index in config['elasticsearch_indices']:
-        if not es.indices.exists(index['name']):
-            print("Creating index", index['name'])
-            es.indices.create(index['name'], body=index['body'])
+    create_indices(es, config)
 
-    for user in config['users']:
-        username = user['name']
-        count = user['count']
+    get_user_tweets(es, config)
 
-        rescount = es.count(index=config['elasticsearch_usertweets_index'],
-            body={"query":{"match":{"user.screen_name":user['name']}}})
 
-        num = rescount['count']
-
-        if num < user['count']:
-            print('Getting tweets for', user['name'])
-
-            for tweet in utils.getTweetsFromUser(api, username, count=count):
-                res = es.index(index=config['elasticsearch_usertweets_index'],
-                    id=tweet.id_str,body=tweet._json)
+    
 
 if __name__ == '__main__':
     main()

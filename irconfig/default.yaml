@@ -1,8 +1,7 @@
 elasticsearch_hosts: []
-elasticsearch_usertweets_index: usertweets
-elasticsearch_user_index: user
 elasticsearch_indices:
-  - name: user
+  user:
+    name: user
     body: >-
       {
         "settings": {
@@ -12,7 +11,8 @@ elasticsearch_indices:
           }
         }
       }
-  - name: usertweets
+  usertweets:
+    name: usertweets
     body: >-
       {
         "settings": {
