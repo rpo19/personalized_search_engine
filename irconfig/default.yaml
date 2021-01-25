@@ -1,7 +1,7 @@
 elasticsearch_hosts: []
 elasticsearch_indices:
-  user:
-    name: user
+  users:
+    name: users
     body: >-
       {
         "settings": {
