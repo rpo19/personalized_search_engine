@@ -1,15 +1,38 @@
-example: hello world
 elasticsearch_hosts:
   - http://localhost:9200
+elasticsearch_usertweets_index: usertweets
+elasticsearch_user_index: user
 elasticsearch_indices:
-  - name: test
+  - name: user
     body: >-
       {
         "settings": {
         },
         "mappings": {
           "properties": {
-            "field1": { "type": "text" }
           }
         }
       }
+  - name: usertweets
+    body: >-
+      {
+        "settings": {
+        },
+        "mappings": {
+          "properties": {
+          }
+        }
+      }
+users:
+  - name: BarackObama
+    count: 5
+  - name: BorisJohnson
+    count: 5
+  - name: JoeBiden
+    count: 5
+  - name: KingJames
+    count: 5
+  - name: sterling7
+    count: 5
+  - name: KDTrey5
+    count: 5
