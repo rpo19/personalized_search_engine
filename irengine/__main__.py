@@ -1,10 +1,15 @@
 import irengine.utils
 import irengine.config
+from elasticsearch import Elasticsearch
 
 ## check indexes
 
-# es = Elasticsearch(["host1", "host2"], maxsize=25)
-
 config = irengine.config.Config().load_config().get_config()
 
-print(config["example"])
+es = Elasticsearch(config["elasticsearch_hosts"])
+
+# index creation
+for index in config["elasticsearch_indices"]:
+    if not es.indices.exists(index['name']):
+        print("Creating index", index['name'])
+        es.indices.create(index['name'], body=index['body'])

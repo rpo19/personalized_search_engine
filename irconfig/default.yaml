@@ -1,3 +1,15 @@
 example: hello world
 elasticsearch_hosts:
   - http://localhost:9200
+elasticsearch_indices:
+  - name: test
+    body: >-
+      {
+        "settings": {
+        },
+        "mappings": {
+          "properties": {
+            "field1": { "type": "text" }
+          }
+        }
+      }
