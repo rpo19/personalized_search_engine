@@ -1,0 +1,3 @@
+example: hello world
+elasticsearch_hosts:
+  - http://localhost:9200

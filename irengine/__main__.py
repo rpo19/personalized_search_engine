@@ -1,3 +1,10 @@
 import irengine.utils
+import irengine.config
 
-print('Hello World')
+## check indexes
+
+# es = Elasticsearch(["host1", "host2"], maxsize=25)
+
+config = irengine.config.Config().load_config().get_config()
+
+print(config["example"])
