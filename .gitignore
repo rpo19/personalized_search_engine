@@ -1,4 +1,6 @@
 **/secrets.py
 **/venv
 **/*.pyc
-.ipynb_checkpoints/
+**/.ipynb_checkpoints
+**/node_modules
+**/.eslintcache
