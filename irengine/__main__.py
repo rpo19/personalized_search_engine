@@ -13,7 +13,7 @@ def create_indices(es, config):
             es.indices.create(index['name'], body=index['body'])
 
 
-def get_user_tweets(es, config):
+def get_user_tweets(api, es, config):
     for user in config['users']:
         username = user['name']
         count = user['count']
@@ -90,7 +90,7 @@ def main(config_path, force_profile):
 
     create_indices(es, config)
 
-    get_user_tweets(es, config)
+    get_user_tweets(api, es, config)
 
     get_users_profile(es, config, force=force_profile)
 
