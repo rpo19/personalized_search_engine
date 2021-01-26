@@ -13,15 +13,7 @@ elasticsearch_indices:
       }
   usertweets:
     name: usertweets
-    body: >-
-      {
-        "settings": {
-        },
-        "mappings": {
-          "properties": {
-          }
-        }
-      }
+    file: mappings/tweets.json
 users:
   - name: BarackObama
     count: 10

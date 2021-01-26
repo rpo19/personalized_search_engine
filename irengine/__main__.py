@@ -10,7 +10,12 @@ def create_indices(es, config):
     for index in config['elasticsearch_indices'].values():
         if not es.indices.exists(index['name']):
             print("Creating index", index['name'])
-            es.indices.create(index['name'], body=index['body'])
+            if 'body' in index:
+                es.indices.create(index['name'], body=index['body'])
+            elif 'file' in index:
+                with open(index['file'], 'r') as fh:
+                    body = fh.read()
+                    es.indices.create(index['name'], body=body)
 
 
 def get_user_tweets(api, es, config):
