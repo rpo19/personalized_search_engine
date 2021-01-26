@@ -24,14 +24,14 @@ elasticsearch_indices:
       }
 users:
   - name: BarackObama
-    count: 5
+    count: 10
   - name: BorisJohnson
-    count: 5
+    count: 10
   - name: JoeBiden
-    count: 5
+    count: 10
   - name: KingJames
-    count: 5
+    count: 10
   - name: sterling7
-    count: 5
+    count: 10
   - name: KDTrey5
-    count: 5
+    count: 10
