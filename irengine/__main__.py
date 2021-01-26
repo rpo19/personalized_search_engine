@@ -97,6 +97,8 @@ def main(config_path, force_profile):
 
     get_user_tweets(api, es, config)
 
+    time.sleep(1)
+
     get_users_profile(es, config, force=force_profile)
 
 
