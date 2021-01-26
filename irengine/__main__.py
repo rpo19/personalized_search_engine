@@ -4,6 +4,12 @@ import irengine.secrets
 import tweepy
 from elasticsearch import Elasticsearch
 import click
+import time
+import nltk
+from nltk.tokenize import word_tokenize
+import itertools
+from collections import Counter
+import string
 
 
 def create_indices(es, config):
@@ -52,17 +58,61 @@ def get_users_profile(es, config, force=False):
 
         res = es.search(
             index=config['elasticsearch_indices']['usertweets']['name'],
-            body={'query': {'match': {'user.screen_name': username}}}
+            body={
+                'size': 1000,
+                'query': {
+                    'match': {
+                        'user.screen_name': username
+                    }
+                }
+            }
         )
 
         hits = res['hits']['hits']
 
+        full_texts = [r['_source']['full_text'] for r in hits]
+
+        hashtags = [[h['text']
+                          for h in r['_source']['entities']['hashtags']]
+                         for r in hits if r['_source']['entities']['hashtags']]
+
+        def flat_list(l):
+            return  [item for sublist in l for item in sublist]
+
+        def common_tokens(tokens, n=20):
+            sentences = (list(itertools.chain(tokens)))
+            flat_sentences = flat_list(sentences)
+            counts = Counter(flat_sentences)
+            
+            return counts
+
+        # common words
+        list_tokens = []
+        stop_words = nltk.corpus.stopwords.words('english')
+        punctuation = string.punctuation
+
+        for text in (full_texts):
+            tokens_clean = []
+            for word in word_tokenize(text):
+                if word.lower() not in stop_words and word.lower() \
+                    not in punctuation and not word.isnumeric() and len(word) > 1:
+                    tokens_clean.append(word.lower())
+            list_tokens.append(tokens_clean)
+
+        counts = common_tokens(list_tokens)
+        common_words = [k for k,v in counts.most_common(30)]
+
+        hashcounts = common_tokens(hashtags)
+        common_hashtags = [k for k,v in hashcounts.most_common(30)]
+
         body = {
             # data extracted from tweets
-            'full_text': [r['_source']['full_text'] for r in hits],
-            'hashtags': [[h['text']
-                    for h in r['_source']['entities']['hashtags']]
-                    for r in hits if r['_source']['entities']['hashtags']],
+            # 'full_text': [r['_source']['full_text'] for r in hits],
+            # 'hashtags': [[h['text']
+            #               for h in r['_source']['entities']['hashtags']]
+            #              for r in hits if r['_source']['entities']['hashtags']],
+            'common_words': common_words,
+            'common_hashtags': common_hashtags,
             # basic user data
             'location': hits[0]['_source']['user']['location'],
             'description': hits[0]['_source']['user']['description'],

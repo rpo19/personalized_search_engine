@@ -16,14 +16,14 @@ elasticsearch_indices:
     file: mappings/tweets.json
 users:
   - name: BarackObama
-    count: 10
+    count: 100
   - name: BorisJohnson
-    count: 10
+    count: 100
   - name: JoeBiden
-    count: 10
+    count: 100
   - name: KingJames
-    count: 10
+    count: 100
   - name: sterling7
-    count: 10
+    count: 100
   - name: KDTrey5
-    count: 10
+    count: 100
