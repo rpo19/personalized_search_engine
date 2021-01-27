@@ -5,11 +5,6 @@ import tweepy
 from elasticsearch import Elasticsearch
 import click
 import time
-import nltk
-from nltk.tokenize import word_tokenize
-import itertools
-from collections import Counter
-import string
 
 
 def create_indices(es, config):
@@ -45,8 +40,30 @@ def get_user_tweets(api, es, config):
 
 
 def get_users_profile(es, config, force=False):
-    for user in config['users']:
 
+    # res = es.search(
+    #     index=config['elasticsearch_indices']['usertweets']['name'],
+    #     body={
+    #         'size': 1000,
+    #         'query': {
+    #             'match_all': {}
+    #             }
+    #         }
+    #     )
+
+    # hits = res['hits']['hits']
+
+    # corpus = [r['_source']['full_text'] for r in hits]
+    # hashtags_corpus = [[h['text']
+    #                  for h in r['_source']['entities']['hashtags']]
+    #                 for r in hits if r['_source']['entities']['hashtags']]
+
+    # corpus_processed = utils.preprocess_text(' '.join(corpus))
+
+    users_data = {}
+
+    # single user analysis
+    for user in config['users']:
         username = user['name']
 
         # do nothing if already exists
@@ -73,46 +90,20 @@ def get_users_profile(es, config, force=False):
         full_texts = [r['_source']['full_text'] for r in hits]
 
         hashtags = [[h['text']
-                          for h in r['_source']['entities']['hashtags']]
-                         for r in hits if r['_source']['entities']['hashtags']]
+                     for h in r['_source']['entities']['hashtags']]
+                    for r in hits if r['_source']['entities']['hashtags']]
 
-        def flat_list(l):
-            return  [item for sublist in l for item in sublist]
+        text_tokens = utils.preprocess_text(' '.join(full_texts))
 
-        def common_tokens(tokens, n=20):
-            sentences = (list(itertools.chain(tokens)))
-            flat_sentences = flat_list(sentences)
-            counts = Counter(flat_sentences)
-            
-            return counts
+        top_words = utils.top_words(text_tokens, 30)
 
-        # common words
-        list_tokens = []
-        stop_words = nltk.corpus.stopwords.words('english')
-        punctuation = string.punctuation
+        top_hashtags = utils.top_words(utils.flat_list(hashtags), 10)
 
-        for text in (full_texts):
-            tokens_clean = []
-            for word in word_tokenize(text):
-                if word.lower() not in stop_words and word.lower() \
-                    not in punctuation and not word.isnumeric() and len(word) > 1:
-                    tokens_clean.append(word.lower())
-            list_tokens.append(tokens_clean)
-
-        counts = common_tokens(list_tokens)
-        common_words = [k for k,v in counts.most_common(30)]
-
-        hashcounts = common_tokens(hashtags)
-        common_hashtags = [k for k,v in hashcounts.most_common(30)]
-
-        body = {
-            # data extracted from tweets
-            # 'full_text': [r['_source']['full_text'] for r in hits],
-            # 'hashtags': [[h['text']
-            #               for h in r['_source']['entities']['hashtags']]
-            #              for r in hits if r['_source']['entities']['hashtags']],
-            'common_words': common_words,
-            'common_hashtags': common_hashtags,
+        data = {
+            'top_words': top_words,
+            'top_hashtags': top_hashtags,
+            'text_tokens': text_tokens,
+            'hashtags': hashtags,
             # basic user data
             'location': hits[0]['_source']['user']['location'],
             'description': hits[0]['_source']['user']['description'],
@@ -120,7 +111,55 @@ def get_users_profile(es, config, force=False):
             'name': hits[0]['_source']['user']['name']
         }
 
+        users_data[username] = data
+
+    # intra users analysis
+    corpus = [' '.join(v['text_tokens']) for v in users_data.values()]
+    tfidf_vectorizer = None
+
+    hashtags_corpus = [' '.join(utils.flat_list(v['hashtags']))
+                       for v in users_data.values()]
+    tfidf_hashtags_vectorizer = None
+
+    for user in config['users']:
+        username = user['name']
+
+        docs_tot = len(config['users'])
+
+        users_data[username]['top_tfidf'], tfidf_vectorizer = utils.top_tfidf(
+            ' '.join(users_data[username]['text_tokens']),
+            corpus,
+            n=30,
+            vectorizer=tfidf_vectorizer)
+
+        users_data[username]['top_tfidf_hashtags'], tfidf_hashtags_vectorizer = utils.top_tfidf(
+            ' '.join(utils.flat_list(users_data[username]['hashtags'])),
+            hashtags_corpus,
+            n=10,
+            vectorizer=tfidf_hashtags_vectorizer)
+
+    for user in config['users']:
+        username = user['name']
+
         print("Creating profile for user", username)
+
+        # list of values to put in the user profile
+        to_keep = [
+            # basic
+            'location',
+            'description',
+            'screen_name',
+            'name',
+            #
+            'top_words',
+            'top_hashtags',
+            'top_tfidf',
+            'top_tfidf_hashtags',
+            # 'text_tokens'
+        ]
+
+        body = {k: v for k,
+                v in users_data[username].items() if k in to_keep}
 
         res_i = es.index(
             index=config['elasticsearch_indices']['users']['name'],
