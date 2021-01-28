@@ -5,7 +5,10 @@ import tweepy
 from elasticsearch import Elasticsearch
 import click
 import time
-
+from nltk.tokenize import TweetTokenizer
+import emoji
+import itertools
+from collections import Counter
 
 def create_indices(es, config):
     for index in config['elasticsearch_indices'].values():
@@ -38,6 +41,27 @@ def get_user_tweets(api, es, config):
                     index=config['elasticsearch_indices']['usertweets']['name'],
                     id=tweet.id_str, body=tweet._json)
 
+def flat_list(l):
+    return  [item for sublist in l for item in sublist]
+def common_tokens(tokens):
+    sentences = (list(itertools.chain(tokens)))
+    flat_sentences = flat_list(sentences)
+    counts = Counter(flat_sentences)
+    
+    return counts
+
+def get_emoji(full_texts, n=10):
+    list_emoji=[]
+    tweetTokenizer = TweetTokenizer()
+
+    for text in full_texts:
+        tokens_clean = []
+        for word in tweetTokenizer.tokenize(text):
+            if word in  emoji.UNICODE_EMOJI['en']:
+                tokens_clean.append(word.lower())
+        list_emoji.append(tokens_clean)
+    counts = common_tokens(list_emoji)
+    return [k for k,v in counts.most_common(n)]
 
 def get_users_profile(es, config, force=False):
 
@@ -108,7 +132,11 @@ def get_users_profile(es, config, force=False):
             'location': hits[0]['_source']['user']['location'],
             'description': hits[0]['_source']['user']['description'],
             'screen_name': username,
-            'name': hits[0]['_source']['user']['name']
+            'name': hits[0]['_source']['user']['name'],
+            # basic usage data
+            'full_texts': full_texts,
+            #'hashtags':hashtags
+            'emoji': get_emoji(full_texts)
         }
 
         users_data[username] = data
@@ -156,6 +184,9 @@ def get_users_profile(es, config, force=False):
             'top_tfidf',
             'top_tfidf_hashtags',
             # 'text_tokens'
+            'full_texts',
+            #'hashtags',
+            'emoji'
         ]
 
         body = {k: v for k,
