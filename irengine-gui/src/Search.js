@@ -8,6 +8,7 @@ import {
     Checkbox,
     FormControlLabel
 } from '@material-ui/core';
+import config from './Config';
 
 class Search extends Component {
 
@@ -26,16 +27,22 @@ class Search extends Component {
     handleSubmit(event) {
         if (this.state.basic) {
             Helper.basicQuery(
-                "http://127.0.0.1:9200",
-                "usertweets",
+                config.ELASTICSEARCH_URL,
+                config.ELASTICSEARCH_RETRIEVAL_INDEX,
                 this.state.corpus,
                 this.state.hashtag,
                 this.props.onResults,
-                (error) => { console.log(error) },
-                event
+                (error) => { console.log(error) }
             );
         } else {
-            console.log("advanced");
+            Helper.advancedQuery(
+                config.ELASTICSEARCH_URL,
+                config.ELASTICSEARCH_RETRIEVAL_INDEX,
+                this.state.corpus,
+                this.props.profileQuery,
+                this.props.onResults,
+                (error) => { console.log(error) }
+            );
         }
 
         event.preventDefault();
@@ -60,7 +67,11 @@ class Search extends Component {
                     <Grid item xs={6} spacing={3}>
                         <FormControlLabel
                             control={<Checkbox name="Basic" checked={this.state.basic}
-                                onClick={() => this.setState({ basic: true })}
+                                onClick={() => {
+                                    this.setState({ basic: true });
+                                    this.props.clearResults()
+                                }
+                                }
                             />}
                             label="Basic"
                         />
@@ -68,7 +79,11 @@ class Search extends Component {
                     <Grid item xs={6} spacing={3}>
                         <FormControlLabel
                             control={<Checkbox name="Advanced" checked={!this.state.basic}
-                                onClick={() => this.setState({ basic: false })}
+                                onClick={() => {
+                                    this.setState({ basic: false });
+                                    this.props.clearResults()
+                                }
+                                }
                             />}
                             label="Advanced"
                         />

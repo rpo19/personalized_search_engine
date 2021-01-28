@@ -1,3 +1,9 @@
 ul {
     list-style-type: none;
 }
+
+.MuiAvatar-circle {
+    margin-right: 4px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}

@@ -4,6 +4,7 @@ import './Tweet.js';
 import Tweet from './Tweet.js';
 import Results from './Results.js';
 import Search from './Search';
+import UserList from './UserList';
 import {
   Paper,
   Grid
@@ -17,10 +18,25 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: '',
+      value: null,
       queryResults: [],
+      profile_query: '',
     };
     this.handleResults = this.handleResults.bind(this);
+    this.setProfileQuery = this.setProfileQuery.bind(this);
+    this.clearResults = this.clearResults.bind(this);
+  }
+
+  setProfileQuery(query) {
+    this.setState({
+      profile_query: query
+    });
+  }
+
+  clearResults(res) {
+    this.setState({
+      queryResults: []
+    });
   }
 
   handleResults(res) {
@@ -41,15 +57,19 @@ class App extends Component {
   render() {
     return (
       <Grid container spacing={1}>
-        <Grid item xs={11} spacing={3}>
+        <Grid item xs={10} spacing={3}>
           <Search
             onResults={this.handleResults}
+            profileQuery={this.state.profile_query}
+            clearResults={this.clearResults}
           />
         </Grid>
-        <Grid item xs={1} spacing={3}>
-          <span>
-            users
-            </span>
+        
+        <Grid item xs={2} spacing={3}>
+          <UserList
+            setProfileQuery={this.setProfileQuery}
+            clearResults={this.clearResults}
+          />
         </Grid>
 
         <Paper>
