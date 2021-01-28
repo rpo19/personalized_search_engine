@@ -3,10 +3,10 @@ import { Component } from 'react';
 import './Tweet.js';
 import Tweet from './Tweet.js';
 import Results from './Results.js';
-import SearchForm from './SearchForm';
+import Search from './Search';
 import {
-  Container,
-  Paper
+  Paper,
+  Grid
 } from '@material-ui/core';
 
 const theme = {
@@ -40,18 +40,23 @@ class App extends Component {
 
   render() {
     return (
-      <Container>
-        <Container maxWidth="md">
-          <SearchForm
+      <Grid container spacing={1}>
+        <Grid item xs={11} spacing={3}>
+          <Search
             onResults={this.handleResults}
           />
-        </Container>
+        </Grid>
+        <Grid item xs={1} spacing={3}>
+          <span>
+            users
+            </span>
+        </Grid>
 
         <Paper>
           <Results value={this.state.queryResults} />
         </Paper>
 
-      </Container>
+      </Grid>
     );
   }
 }
