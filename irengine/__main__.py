@@ -1,6 +1,6 @@
 import irengine.utils as utils
 import irengine.config
-import irengine.secrets
+import irconfig.secrets
 import tweepy
 from elasticsearch import Elasticsearch
 import click
@@ -206,10 +206,10 @@ def main(config_path, force_profile):
 
     es = Elasticsearch(config["elasticsearch_hosts"])
 
-    auth = tweepy.OAuthHandler(irengine.secrets.consumer_key,
-                               irengine.secrets.consumer_secret)
-    auth.set_access_token(irengine.secrets.access_token,
-                          irengine.secrets.access_secret)
+    auth = tweepy.OAuthHandler(irconfig.secrets.consumer_key,
+                               irconfig.secrets.consumer_secret)
+    auth.set_access_token(irconfig.secrets.access_token,
+                          irconfig.secrets.access_secret)
 
     api = tweepy.API(auth)
 

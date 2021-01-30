@@ -4,8 +4,8 @@
 
 ### Twitter API
 
-Put your twitter API credentials into `irengine/secrets.py`.
-Take a look at the sample `irengine/secrets-sample.py`
+Put your twitter API credentials into `irconfig/secrets.py`.
+Take a look at the sample `irconfig/secrets-sample.py`
 
 ### Docker compose
 
