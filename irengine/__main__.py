@@ -20,6 +20,24 @@ def create_indices(es, config):
                     body = fh.read()
                     es.indices.create(index['name'], body=body)
 
+def get_retrievalbase_tweets(api, es, config):
+    for account in config['retrievalbase']:
+        username = account['name']
+        count = account['count']
+
+        rescount = es.count(
+            index=config['elasticsearch_indices']['retrievalbase']['name'],
+            body={"query": {"match": {"user.screen_name": account['name']}}})
+
+        num = rescount['count']
+
+        if num < count:
+            print('Getting tweets for retrievalbase from', account['name'])
+
+            for tweet in utils.getTweetsFromUser(api, username, count=count):
+                res = es.index(
+                    index=config['elasticsearch_indices']['retrievalbase']['name'],
+                    id=tweet.id_str, body=tweet._json)
 
 def get_user_tweets(api, es, config):
     for user in config['users']:
@@ -32,7 +50,7 @@ def get_user_tweets(api, es, config):
 
         num = rescount['count']
 
-        if num < user['count']:
+        if num < count:
             print('Getting tweets for', user['name'])
 
             for tweet in utils.getTweetsFromUser(api, username, count=count):
@@ -216,9 +234,12 @@ def main(config_path, force_profile):
 
     get_user_tweets(api, es, config)
 
+    get_retrievalbase_tweets(api, es, config)
+
     time.sleep(1)
 
     get_users_profile(es, config, force=force_profile)
+
 
     print("All done.")
 
