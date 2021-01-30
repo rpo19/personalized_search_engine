@@ -13,6 +13,8 @@ services:
       - discovery.type=single-node
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - http.cors.enabled=${ELASTICSEARCH_CORS}
+      - http.cors.allow-origin=${ELASTICSEARCH_CORS_ALLOW_ORIGIN}
     ulimits:
       memlock:
         soft: -1

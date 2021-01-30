@@ -1,1 +1,6 @@
+# whether to restart automatically docker-compose services
 RESTART=no
+# enable elasticsearch CORS
+ELASTICSEARCH_CORS=true
+# CORS allowed url regex; this allows everything from localhost
+ELASTICSEARCH_CORS_ALLOW_ORIGIN=/https?:\/\/localhost(:[0-9]+)?/
