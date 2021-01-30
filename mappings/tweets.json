@@ -16,13 +16,7 @@
                                 "enabled": false
                             },
                             "text": {
-                                "type": "text",
-                                "fields": {
-                                    "keyword": {
-                                        "type": "keyword",
-                                        "ignore_above": 256
-                                    }
-                                }
+                                "type": "keyword"
                             }
                         }
                     },
@@ -47,13 +41,7 @@
                 "enabled": false
             },
             "full_text": {
-                "type": "text",
-                "fields": {
-                    "keyword": {
-                        "type": "keyword",
-                        "ignore_above": 256
-                    }
-                }
+                "type": "text"
             },
             "id": {
                 "enabled": false
@@ -172,13 +160,7 @@
                         "enabled": false
                     },
                     "name": {
-                        "type": "text",
-                        "fields": {
-                            "keyword": {
-                                "type": "keyword",
-                                "ignore_above": 256
-                            }
-                        }
+                        "type": "keyword"
                     },
                     "notifications": {
                         "enabled": false
@@ -223,13 +205,7 @@
                         "enabled": false
                     },
                     "screen_name": {
-                        "type": "text",
-                        "fields": {
-                            "keyword": {
-                                "type": "keyword",
-                                "ignore_above": 256
-                            }
-                        }
+                        "type": "keyword"
                     },
                     "statuses_count": {
                         "enabled": false
