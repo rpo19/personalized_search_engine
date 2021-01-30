@@ -7,7 +7,9 @@ import Search from './Search';
 import UserList from './UserList';
 import {
   Paper,
-  Grid
+  Grid,
+  Box,
+  Container
 } from '@material-ui/core';
 
 const theme = {
@@ -55,6 +57,17 @@ class App extends Component {
   }
 
   render() {
+
+    let results = this.state.queryResults.length === 0 ?
+      (
+        <Box m={2} class="noresults">
+            Your query didn't produce any results :(
+        </Box>
+      ) :
+      (
+        <Results value={this.state.queryResults} />
+      );
+
     return (
       <Grid container spacing={1}>
         <Grid item xs={10} spacing={3}>
@@ -64,7 +77,7 @@ class App extends Component {
             clearResults={this.clearResults}
           />
         </Grid>
-        
+
         <Grid item xs={2} spacing={3}>
           <UserList
             setProfileQuery={this.setProfileQuery}
@@ -72,9 +85,11 @@ class App extends Component {
           />
         </Grid>
 
-        <Paper>
-          <Results value={this.state.queryResults} />
-        </Paper>
+        <Container>
+          <Paper>
+            {results}
+          </Paper>
+        </Container>
 
       </Grid>
     );
