@@ -6,6 +6,8 @@ from collections import Counter
 import re
 from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
+from nltk.tokenize import TweetTokenizer
+import emoji
 
 PREPROCESS_FILTER_PATTERN = '^(https?|rt|[^A-Za-z0-9]+)$'
 FILTER_PATTERN = re.compile(PREPROCESS_FILTER_PATTERN)
@@ -48,9 +50,13 @@ def preprocess_text(text):
 
     stop_words = nltk.corpus.stopwords.words('english')
     punctuation = string.punctuation
-           
+    
+
+    tweetTokenizer = TweetTokenizer()       
     def helper(text):
-        for word in word_tokenize(text):
+        list_emoji = []
+        list_word = []
+        for word in tweetTokenizer.tokenize(text):
             # lowercase
             word = word.lower()
             # removing punctiuation
@@ -61,14 +67,19 @@ def preprocess_text(text):
             check = len(word) > 2 \
                 and not word.isnumeric() \
                 and word not in stop_words \
-                and not FILTER_PATTERN.match(word)
+                and not FILTER_PATTERN.match(word) \
+                and word not in emoji.UNICODE_EMOJI['en']
 
             if check:
-                yield word
-
-    ret = list(helper(text))
-
-    return ret
+                list_word.append(word.lower())
+            elif word in emoji.UNICODE_EMOJI['en']:
+                list_emoji.append(word.lower())
+        return list_word, list_emoji
+    
+    words, lemoji = helper(text)
+    ret1 = list(words)
+    ret2 = list(lemoji)
+    return ret1, ret2
 
 
 def top_words(text_tokens, n=30):
@@ -91,3 +102,24 @@ def top_tfidf(doc, corpus, n=30, vectorizer=None):
 
     return top_tfidf_, vectorizer
 
+############################################################################
+def common_tokens(tokens):
+    sentences = (list(itertools.chain(tokens)))
+    flat_sentences = flat_list(sentences)
+    counts = Counter(flat_sentences)
+
+    return counts
+
+
+def get_emoji(full_texts, n=10):
+    list_emoji = []
+    tweetTokenizer = TweetTokenizer()
+
+    for text in full_texts:
+        tokens_clean = []
+        for word in tweetTokenizer.tokenize(text):
+            if word in emoji.UNICODE_EMOJI['en']:
+                tokens_clean.append(word.lower())
+        list_emoji.append(tokens_clean)
+    counts = common_tokens(list_emoji)
+    return [k for k, v in counts.most_common(n)]

@@ -4,10 +4,10 @@ import tweepy
 from elasticsearch import Elasticsearch
 import click
 import time
-from nltk.tokenize import TweetTokenizer
-import emoji
 import itertools
 from collections import Counter
+#from nltk.tokenize import TweetTokenizer
+#import emoji
 
 
 def create_indices(es, config):
@@ -60,32 +60,6 @@ def get_user_tweets(api, es, config):
                 res = es.index(
                     index=config['elasticsearch_indices']['usertweets']['name'],
                     id=tweet.id_str, body=tweet._json)
-
-
-def flat_list(l):
-    return [item for sublist in l for item in sublist]
-
-
-def common_tokens(tokens):
-    sentences = (list(itertools.chain(tokens)))
-    flat_sentences = flat_list(sentences)
-    counts = Counter(flat_sentences)
-
-    return counts
-
-
-def get_emoji(full_texts, n=10):
-    list_emoji = []
-    tweetTokenizer = TweetTokenizer()
-
-    for text in full_texts:
-        tokens_clean = []
-        for word in tweetTokenizer.tokenize(text):
-            if word in emoji.UNICODE_EMOJI['en']:
-                tokens_clean.append(word.lower())
-        list_emoji.append(tokens_clean)
-    counts = common_tokens(list_emoji)
-    return [k for k, v in counts.most_common(n)]
 
 
 def get_users_profile(es, config, force=False):
@@ -142,12 +116,12 @@ def get_users_profile(es, config, force=False):
                      for h in r['_source']['entities']['hashtags']]
                     for r in hits if r['_source']['entities']['hashtags']]
 
-        text_tokens = utils.preprocess_text(' '.join(full_texts))
+        text_tokens, emoji_tokens = utils.preprocess_text(' '.join(full_texts))
 
         top_words = utils.top_words(text_tokens, 30)
-
+        top_emoji = utils.top_words(emoji_tokens, 10)
         top_hashtags = utils.top_words(utils.flat_list(hashtags), 10)
-
+        
         data = {
             'top_words': top_words,
             'top_hashtags': top_hashtags,
@@ -162,7 +136,7 @@ def get_users_profile(es, config, force=False):
             # basic usage data
             'full_texts': full_texts,
             # 'hashtags':hashtags
-            'emoji': get_emoji(full_texts)
+            'emoji': top_emoji#utils.get_emoji(full_texts)
         }
 
         users_data[username] = data
