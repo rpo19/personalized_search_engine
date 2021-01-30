@@ -51,7 +51,7 @@ class Helper {
                                     query: query,
                                     // boost: 4,
                                 }
-                            }
+                            },
                         },
                         should: {
                             match: {
@@ -60,6 +60,21 @@ class Helper {
                                     // boost: 0.1,
                                 }
                             }
+                        }
+                    }
+                },
+                highlight: {
+                    fields: {
+                        full_text: {
+                            highlight_query: {
+                                match: {
+                                    full_text: {
+                                        query: query
+                                    }
+                                }
+                            },
+                            pre_tags: "<mark>",
+                            post_tags: "</mark>"
                         }
                     }
                 }
@@ -97,6 +112,18 @@ class Helper {
                                 }
                             }
                         ]
+                    }
+                },
+                highlight: {
+                    fields: {
+                        full_text: {
+                            pre_tags: "<mark>",
+                            post_tags: "</mark>"
+                        },
+                        "entities.hashtags.text": {
+                            pre_tags: "",
+                            post_tags: ""
+                        },
                     }
                 }
             })
