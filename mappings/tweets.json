@@ -41,7 +41,8 @@
                 "enabled": false
             },
             "full_text": {
-                "type": "text"
+                "type": "text",
+                "analyzer" : "english"
             },
             "id": {
                 "enabled": false
