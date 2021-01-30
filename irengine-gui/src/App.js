@@ -46,8 +46,8 @@ class App extends Component {
     const hits = res['hits']['hits'];
     const results = hits.map((hit, idx) => {
       return (
-        <li key={hit['_source']['id_str']}>
-          <Tweet value={hit['_source']} />
+        <li key={hit['_id']}>
+          <Tweet value={hit} />
         </li>);
     });
 
