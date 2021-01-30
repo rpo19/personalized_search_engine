@@ -1,11 +1,8 @@
 import {
-    Grid,
-    Fab,
     Avatar,
     Box,
     FormControlLabel
 } from '@material-ui/core';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import { Component } from 'react';
 
 class User extends Component {
@@ -31,24 +28,80 @@ class User extends Component {
         );
 
         const avatar = this.props.source.profile_image_url ?
-        (
-            <img src={this.props.source.profile_image_url}></img>
-        )
-        :
-        (
-            <Avatar display="inline">
-                {this.state.name_initials}
-            </Avatar>
-        );
+            (
+                <img className="icon"
+                    alt=""
+                    src={this.props.source.profile_image_url}></img>
+            )
+            :
+            (
+                <Avatar display="inline">
+                    {this.state.name_initials}
+                </Avatar>
+            );
+
+        const extended = this.props.extended ?
+            (
+                <ul>
+                    <li>
+                        <Box>
+                            <b>Location:</b><br></br>
+                            <span>
+                                {this.props.source['location']}
+                            </span>
+                        </Box>
+                    </li>
+                    <li>
+                        <Box>
+                            <b>Description:</b><br></br>
+                            <span>
+                                {this.props.source['description']}
+                            </span>
+                        </Box>
+                    </li>
+                    <li>
+                        <Box>
+                            <b>Top words:</b><br></br>
+                            <span>
+                                {this.props.source['top_tfidf'].join(" ")}
+                            </span>
+                        </Box>
+                    </li>
+                    <li>
+                        <Box>
+                            <b>Top hashtags:</b><br></br>
+                            <span>
+                                {this.props.source['top_tfidf_hashtags'].map(
+                                    (x) => { return '#' + x }).join(" ")}
+                            </span>
+                        </Box>
+                    </li>
+                    <li>
+                        <Box>
+                            <b>Top emoji:</b><br></br>
+                            <span>
+                                {this.props.source['emoji'].join(" ")}
+                            </span>
+                        </Box>
+                    </li>
+                </ul>
+            )
+            :
+            (
+                <a></a>
+            );
 
         return (
-            <Box m={1}>
-                <FormControlLabel
-                    onClick={this.props.onClick}
-                    control={avatar}
-                    label={label}
-                />
-            </Box>
+            <div>
+                <Box m={1} display="block">
+                    <FormControlLabel
+                        onClick={this.props.onClick}
+                        control={avatar}
+                        label={label}
+                    />
+                </Box>
+                {extended}
+            </div>
         );
     }
 }

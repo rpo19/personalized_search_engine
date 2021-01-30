@@ -115,24 +115,32 @@ class UserList extends Component {
             );
         } else if (this.state.current_user) {
             to_show = (
-                <Box display="block">
-                    <User
-                        source={this.state.sources[this.state.current_user]}
-                        onClick={() => {
-                            this.setState({ current_user: null });
-                            this.props.clearResults()
-                        }
-                        }
-                    />
-                </Box>
+                <Paper>
+                    <Box m={1}>
+                        <User
+                            source={this.state.sources[this.state.current_user]}
+                            onClick={() => {
+                                this.setState({ current_user: null });
+                                this.props.clearResults()
+                            }
+                            }
+                            extended={true}
+                        />
+                    </Box>
+                </Paper>
             );
         } else {
             to_show = (
-                <Box display="block">
-                    <Fab onClick={this.handleClick}>
-                        <AccountCircleIcon />
-                    </Fab>
-                </Box>
+                <Paper onClick={this.handleClick}>
+                    <Box m={1} display="inline">
+                        <Fab>
+                            <AccountCircleIcon />
+                        </Fab>
+                    </Box>
+                    <Box m={1} display="inline">
+                        Login
+                    </Box>
+                </Paper>
             );
         }
 

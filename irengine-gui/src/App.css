@@ -11,3 +11,8 @@ ul {
 .noresults {
     text-align: center;
 }
+
+.icon {
+    max-width: 50px;
+    max-height: 50px;
+}
