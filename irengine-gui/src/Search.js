@@ -4,9 +4,7 @@ import {
     TextField,
     Button,
     Grid,
-    Box,
-    Checkbox,
-    FormControlLabel
+    Box
 } from '@material-ui/core';
 import config from './Config';
 
