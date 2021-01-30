@@ -10,17 +10,13 @@ class Config():
         exclude_keys = () # can choose to remove specific keys
         output_format = "yaml" # yaml/json
 
-        print("Configuration:")
-        print("-"*32)
-
         self.config = config_processor.process(
             path=path,
             filters=filters,
             exclude_keys=exclude_keys,
-            output_format=output_format, print_data=True
+            output_format=output_format,
+            print_data=False
             )
-
-        print("-"*32)
 
         return self
 
