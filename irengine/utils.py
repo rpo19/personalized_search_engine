@@ -101,25 +101,3 @@ def top_tfidf(doc, corpus, n=30, vectorizer=None):
     top_tfidf_ = featarr[tfidf_sorting][:n]
 
     return top_tfidf_, vectorizer
-
-############################################################################
-def common_tokens(tokens):
-    sentences = (list(itertools.chain(tokens)))
-    flat_sentences = flat_list(sentences)
-    counts = Counter(flat_sentences)
-
-    return counts
-
-
-def get_emoji(full_texts, n=10):
-    list_emoji = []
-    tweetTokenizer = TweetTokenizer()
-
-    for text in full_texts:
-        tokens_clean = []
-        for word in tweetTokenizer.tokenize(text):
-            if word in emoji.UNICODE_EMOJI['en']:
-                tokens_clean.append(word.lower())
-        list_emoji.append(tokens_clean)
-    counts = common_tokens(list_emoji)
-    return [k for k, v in counts.most_common(n)]
