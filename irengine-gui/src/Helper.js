@@ -1,5 +1,8 @@
 class Helper {
 
+    /*
+    Gets single user document
+    */
     static getUserProfile(host, index, user_id,
         handleResults, handleErrors) {
         fetch(host + '/' + index + '/_doc/' + user_id)
@@ -7,6 +10,9 @@ class Helper {
             .then(handleResults, handleErrors);
     }
 
+    /*
+    Gets all users from users index
+    */
     static getUsersProfile(host, index,
         handleResults, handleErrors) {
         const requestOptions = {
@@ -26,6 +32,9 @@ class Helper {
             .then(handleResults, handleErrors);
     }
 
+    /*
+    Takes care of user profiles
+    */
     static advancedQuery(host, index, query, profileQuery,
         handleResults, handleErrors) {
             const requestOptions = {
@@ -40,14 +49,16 @@ class Helper {
                                 {
                                     match: {
                                         full_text: {
-                                            query: query
+                                            query: query,
+                                            // boost: 4,
                                         }
                                     }
                                 },
                                 {
                                     match: {
                                         full_text: {
-                                            query: profileQuery
+                                            query: profileQuery,
+                                            // boost: 0.1,
                                         }
                                     }
                                 }
