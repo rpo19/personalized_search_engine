@@ -6,3 +6,4 @@ click
 nltk
 numpy
 sklearn
+emoji
