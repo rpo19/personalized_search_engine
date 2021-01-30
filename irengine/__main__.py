@@ -9,6 +9,7 @@ import emoji
 import itertools
 from collections import Counter
 
+
 def create_indices(es, config):
     for index in config['elasticsearch_indices'].values():
         if not es.indices.exists(index['name']):
@@ -19,6 +20,7 @@ def create_indices(es, config):
                 with open(index['file'], 'r') as fh:
                     body = fh.read()
                     es.indices.create(index['name'], body=body)
+
 
 def get_retrievalbase_tweets(api, es, config):
     for account in config['retrievalbase']:
@@ -39,6 +41,7 @@ def get_retrievalbase_tweets(api, es, config):
                     index=config['elasticsearch_indices']['retrievalbase']['name'],
                     id=tweet.id_str, body=tweet._json)
 
+
 def get_user_tweets(api, es, config):
     for user in config['users']:
         username = user['name']
@@ -58,27 +61,32 @@ def get_user_tweets(api, es, config):
                     index=config['elasticsearch_indices']['usertweets']['name'],
                     id=tweet.id_str, body=tweet._json)
 
+
 def flat_list(l):
-    return  [item for sublist in l for item in sublist]
+    return [item for sublist in l for item in sublist]
+
+
 def common_tokens(tokens):
     sentences = (list(itertools.chain(tokens)))
     flat_sentences = flat_list(sentences)
     counts = Counter(flat_sentences)
-    
+
     return counts
 
+
 def get_emoji(full_texts, n=10):
-    list_emoji=[]
+    list_emoji = []
     tweetTokenizer = TweetTokenizer()
 
     for text in full_texts:
         tokens_clean = []
         for word in tweetTokenizer.tokenize(text):
-            if word in  emoji.UNICODE_EMOJI['en']:
+            if word in emoji.UNICODE_EMOJI['en']:
                 tokens_clean.append(word.lower())
         list_emoji.append(tokens_clean)
     counts = common_tokens(list_emoji)
-    return [k for k,v in counts.most_common(n)]
+    return [k for k, v in counts.most_common(n)]
+
 
 def get_users_profile(es, config, force=False):
 
@@ -148,11 +156,12 @@ def get_users_profile(es, config, force=False):
             # basic user data
             'location': hits[0]['_source']['user']['location'],
             'description': hits[0]['_source']['user']['description'],
+            'profile_image_url': hits[0]['_source']['user']['profile_image_url_https'],
             'screen_name': username,
             'name': hits[0]['_source']['user']['name'],
             # basic usage data
             'full_texts': full_texts,
-            #'hashtags':hashtags
+            # 'hashtags':hashtags
             'emoji': get_emoji(full_texts)
         }
 
@@ -195,6 +204,7 @@ def get_users_profile(es, config, force=False):
             'description',
             'screen_name',
             'name',
+            'profile_image_url',
             #
             'top_words',
             'top_hashtags',
@@ -202,7 +212,7 @@ def get_users_profile(es, config, force=False):
             'top_tfidf_hashtags',
             # 'text_tokens'
             'full_texts',
-            #'hashtags',
+            # 'hashtags',
             'emoji'
         ]
 
@@ -239,7 +249,6 @@ def main(config_path, force_profile):
     time.sleep(1)
 
     get_users_profile(es, config, force=force_profile)
-
 
     print("All done.")
 

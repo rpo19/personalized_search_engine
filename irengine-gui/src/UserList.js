@@ -15,8 +15,8 @@ class UserList extends Component {
         this.state = {
             showList: false,
             users: [],
+            sources: {},
             current_user: null,
-            current_user_name: null,
         };
         this.handleClick = this.handleClick.bind(this);
         this.setUsers = this.setUsers.bind(this);
@@ -26,22 +26,25 @@ class UserList extends Component {
 
     onUserProfileReceived(doc) {
         this.props.setProfileQuery(doc['_source']['top_tfidf'].join(" "));
+        this.setState({
+            current_user_source: doc['_source']
+        });
     }
 
     handleUserClick(screen_name) {
         this.setState({
             current_user: screen_name,
-            current_user_name: screen_name,
             showList: !this.state.showList
         });
         // get data of current user
-        Helper.getUserProfile(
-            config.ELASTICSEARCH_URL,
-            config.ELASTICSEARCH_USERS_INDEX,
-            screen_name,
-            this.onUserProfileReceived,
-            (error) => console.log(error)
-        )
+
+        // Helper.getUserProfile(
+        //     config.ELASTICSEARCH_URL,
+        //     config.ELASTICSEARCH_USERS_INDEX,
+        //     screen_name,
+        //     this.onUserProfileReceived,
+        //     (error) => console.log(error)
+        // )
 
         this.props.clearResults();
     }
@@ -49,23 +52,36 @@ class UserList extends Component {
     setUsers(results) {
         const hits = results['hits']['hits'];
 
-        this.setState({
-            users: hits.map((x) => {
-                const name = x['_source']['name'];
-                const screen_name = x['_source']['screen_name'];
+        const entries = hits.map((x) => {
+            return ([
+                x['_source']['screen_name'],
+                x['_source'],
+            ]);
+        });
 
-                return (
-                    <li key={screen_name}>
-                        <User name={name} screen_name={screen_name}
-                            onClick={() => this.handleUserClick(screen_name)} />
-                    </li>
-                );
-            }),
+        const sources = Object.fromEntries(entries);
+
+        const users = hits.map((x) => {
+            const source = x['_source'];
+            const screen_name = x['_source']['screen_name'];
+
+            return (
+                <li key={screen_name}>
+                    <User source={source}
+                        onClick={() => this.handleUserClick(screen_name)} />
+                </li>
+            );
+        });
+
+        this.setState({
+            sources: sources,
+            users: users,
         });
     }
 
     handleClick() {
         if (this.state.users.length === 0) {
+            // get all users profiles
             Helper.getUsersProfile(
                 config.ELASTICSEARCH_URL,
                 config.ELASTICSEARCH_USERS_INDEX,
@@ -106,8 +122,7 @@ class UserList extends Component {
             to_show = (
                 <Box display="block">
                     <User
-                        name={this.state.current_user_name}
-                        screen_name={this.state.current_user}
+                        source={this.state.sources[this.state.current_user]}
                         onClick={() => {
                             this.setState({ current_user: null });
                             this.props.clearResults()

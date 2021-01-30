@@ -60,9 +60,11 @@ class App extends Component {
 
     let results = this.state.queryResults.length === 0 ?
       (
-        <Box m={2} class="noresults">
+        <Paper>
+          <Box m={2} class="noresults">
             Your query didn't produce any results :(
-        </Box>
+          </Box>
+        </Paper>
       ) :
       (
         <Results value={this.state.queryResults} />
@@ -86,9 +88,7 @@ class App extends Component {
         </Grid>
 
         <Container>
-          <Paper>
-            {results}
-          </Paper>
+          {results}
         </Container>
 
       </Grid>
