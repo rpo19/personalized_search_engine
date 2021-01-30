@@ -169,7 +169,7 @@ configure `http.cors` to match IRengine GUI's url.
 You need to set:
 ```
 http.cors.enabled: true
-http.cors.allow-origin: "/http:\/\/localhost(:[0-9]+)?/"
+http.cors.allow-origin: /https?:\/\/localhost(:[0-9]+)?/
 ```
 in `elasticsearch.yml` and the restart elasticsearch to apply it.
 
