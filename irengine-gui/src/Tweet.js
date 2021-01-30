@@ -7,59 +7,40 @@ import {
 import { Component } from 'react';
 
 class Tweet extends Component {
-
-    constructor(props) {
-        super(props);
-    }
-
     /*
         process text to highlight hashtags specially matched ones
     */
-    process_text(text, highlight) {
-        // const firstChar = text.charAt(0);
-        // const hashsplit = text.split("#");
-        // hashsplit.forEach(element => {
-        //     const spaceIdx = element.indexOf(" ");
-        //     if(spaceIdx > 0){
-        //     const left = element.substr(0, spaceIdx);
-        //     const right = element.substr(spaceIdx + 1);
-        //     } else {
-        //         // no spazi
-        //     }
-        //     element.split(" ").forEach(inner => {
-        //         if (inner
-        //     });
-        // });
+    process_text(value, highlight) {
 
-        const regexp = /#[A-Za-z0-9]+/g;
+        var text = value.highlight.full_text ?
+            value.highlight.full_text[0] : value._source.full_text;
 
-        let array1;
+        const hashtags = value._source.entities.hashtags;
 
-        let text2 = "";
-
-        let i = 0;
-        while ((array1 = regexp.exec(text)) !== null) {
-            console.log(`Found ${array1[0]}. Next starts at ${regexp.lastIndex}.`);
-            text2 += text.substr(i, regexp.lastIndex - array1[0].length - i);
-            if (highlight["entities.hashtags.text"] &&
-                highlight["entities.hashtags.text"]
-                    .includes(array1[0].substr(1))) {
-                text2 += "<mark>" + array1[0] + "</mark>";
-            } else {
-                text2 += "<b>" + array1[0] + "</b>";
+        if (hashtags.length > 0) {
+            let i = 0;
+            for (; i < hashtags.length; i++) {
+                if ('entities.hashtags.text' in value.highlight &&
+                        value.highlight["entities.hashtags.text"]
+                        .includes(hashtags[i]['text'])) {
+                            text = text.replace(
+                                new RegExp("#"+hashtags[i]['text'], "g"),
+                                "<mark>#"+hashtags[i]['text']+"</mark>"
+                                );
+                } else {
+                    text = text.replace(
+                        new RegExp("#"+hashtags[i]['text'], "g"),
+                        "<b>#"+hashtags[i]['text']+"</b>"
+                        );
+                }
             }
-            i = regexp.lastIndex;
         }
-        text2 += text.substr(i);
 
-        return text2;
+        return text;
 
     }
 
     render() {
-
-        const full_text = this.props.value.highlight.full_text ?
-            this.props.value.highlight.full_text[0] : this.props.value._source.full_text;
 
         return (
             <Box m={2}>
@@ -96,7 +77,7 @@ class Tweet extends Component {
                             <Box mb={2} mr={2} ml={4} >
                                 <div dangerouslySetInnerHTML={{
                                     __html: this.process_text(
-                                        full_text, this.props.value.highlight)
+                                        this.props.value, this.props.value.highlight)
                                 }} />
                             </Box>
                         </Grid>
