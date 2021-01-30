@@ -78,6 +78,10 @@ class App extends Component {
             profileQuery={this.state.profile_query}
             clearResults={this.clearResults}
           />
+
+          <Container>
+            {results}
+          </Container>
         </Grid>
 
         <Grid item xs={2} spacing={3}>
@@ -87,9 +91,7 @@ class App extends Component {
           />
         </Grid>
 
-        <Container>
-          {results}
-        </Container>
+
 
       </Grid>
     );

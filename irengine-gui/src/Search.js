@@ -61,35 +61,43 @@ class Search extends Component {
     }
 
     render() {
+
+        const basic = this.state.basic ? "contained" : "outlined";
+        const advanced = this.state.basic ? "outlined" : "contained";
+
         return (
             <Grid container spacing={1}>
-                <Grid item xs={1} spacing={3}>
+                <Grid item xs={2} spacing={3}>
                     <Grid item xs={6} spacing={3}>
-                        <FormControlLabel
-                            control={<Checkbox name="Basic" checked={this.state.basic}
-                                onClick={() => {
-                                    this.setState({ basic: true });
-                                    this.props.clearResults()
-                                }
-                                }
-                            />}
-                            label="Basic"
-                        />
+                        <Button
+                            onClick={() => {
+                                this.setState({ basic: true });
+                                this.props.clearResults()
+                            }
+                            }
+                            color="primary"
+                            variant={basic}
+                            fullWidth
+                        >
+                            Basic
+                        </Button>
                     </Grid>
                     <Grid item xs={6} spacing={3}>
-                        <FormControlLabel
-                            control={<Checkbox name="Advanced" checked={!this.state.basic}
-                                onClick={() => {
-                                    this.setState({ basic: false });
-                                    this.props.clearResults()
-                                }
-                                }
-                            />}
-                            label="Advanced"
-                        />
+                        <Button
+                            onClick={() => {
+                                this.setState({ basic: false });
+                                this.props.clearResults()
+                            }
+                            }
+                            color="primary"
+                            variant={advanced}
+                            fullWidth
+                        >
+                            Advanced
+                        </Button>
                     </Grid>
                 </Grid>
-                <Grid item xs={11}>
+                <Grid item xs={9}>
                     <form onSubmit={this.handleSubmit}>
                         <Box m={2} display="block">
                             <TextField variant="outlined" type="text"
@@ -108,7 +116,7 @@ class Search extends Component {
                             </Box>
                         }
                         <Box m={2} display="block" textAlign='center'>
-                            <Button type="submit" variant="outlined">
+                            <Button type="submit" variant="outlined" color="primary">
                                 Search
                     </Button>
                         </Box>
