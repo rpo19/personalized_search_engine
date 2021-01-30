@@ -228,7 +228,9 @@ def get_users_profile(es, config, force=False):
 @click.option('-c', '--config-path', default='irconfig/local', help='Config path')
 @click.option('-p', '--force-profile', is_flag=True, default=False,
               help='Force user profile creation. Overwrite if already exists.')
-def main(config_path, force_profile):
+@click.option('-n', '--no-tweets', is_flag=True, default=False,
+              help='Skip Tweets download.')
+def main(config_path, force_profile, no_tweets):
     config = irengine.config.Config().load_config(path=config_path).get_config()
 
     es = Elasticsearch(config["elasticsearch_hosts"])
@@ -242,9 +244,9 @@ def main(config_path, force_profile):
 
     create_indices(es, config)
 
-    get_user_tweets(api, es, config)
-
-    get_retrievalbase_tweets(api, es, config)
+    if not no_tweets:
+        get_user_tweets(api, es, config)
+        get_retrievalbase_tweets(api, es, config)
 
     time.sleep(1)
 
