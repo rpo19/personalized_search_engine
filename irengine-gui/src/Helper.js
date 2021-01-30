@@ -37,41 +37,39 @@ class Helper {
     */
     static advancedQuery(host, index, query, profileQuery,
         handleResults, handleErrors) {
-            const requestOptions = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    query: {
-                        bool: {
-                            should: [
-                                {
-                                    match: {
-                                        full_text: {
-                                            query: query,
-                                            // boost: 4,
-                                        }
-                                    }
-                                },
-                                {
-                                    match: {
-                                        full_text: {
-                                            query: profileQuery,
-                                            // boost: 0.1,
-                                        }
-                                    }
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                query: {
+                    bool: {
+                        must: {
+                            match: {
+                                full_text: {
+                                    query: query,
+                                    // boost: 4,
                                 }
-                            ]
+                            }
+                        },
+                        should: {
+                            match: {
+                                full_text: {
+                                    query: profileQuery,
+                                    // boost: 0.1,
+                                }
+                            }
                         }
                     }
-                })
-            };
-    
-            fetch(host + '/' + index + "/_search", requestOptions)
-                .then(res => res.json())
-                .then(handleResults, handleErrors);
-        }
+                }
+            })
+        };
+
+        fetch(host + '/' + index + "/_search", requestOptions)
+            .then(res => res.json())
+            .then(handleResults, handleErrors);
+    }
 
     static basicQuery(host, index, corpus, hastags,
         handleResults, handleErrors) {

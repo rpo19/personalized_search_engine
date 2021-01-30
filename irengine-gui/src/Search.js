@@ -65,8 +65,8 @@ class Search extends Component {
 
         return (
             <Grid container spacing={1}>
-                <Grid item xs={2} spacing={3}>
-                    <Grid item xs={6} spacing={3}>
+                <Grid item xs={2}>
+                    <Grid item xs={6}>
                         <Button
                             onClick={() => {
                                 this.setState({ basic: true });
@@ -80,7 +80,7 @@ class Search extends Component {
                             Basic
                         </Button>
                     </Grid>
-                    <Grid item xs={6} spacing={3}>
+                    <Grid item xs={6}>
                         <Button
                             onClick={() => {
                                 this.setState({ basic: false });

@@ -42,7 +42,6 @@ class App extends Component {
   }
 
   handleResults(res) {
-    console.log(res)
     const hits = res['hits']['hits'];
     const results = hits.map((hit, idx) => {
       return (
@@ -61,7 +60,7 @@ class App extends Component {
     let results = this.state.queryResults.length === 0 ?
       (
         <Paper>
-          <Box m={2} class="noresults">
+          <Box m={2} className="noresults">
             Your query didn't produce any results :(
           </Box>
         </Paper>
@@ -72,7 +71,7 @@ class App extends Component {
 
     return (
       <Grid container spacing={1}>
-        <Grid item xs={10} spacing={3}>
+        <Grid item xs={10}>
           <Search
             onResults={this.handleResults}
             profileQuery={this.state.profile_query}
@@ -84,7 +83,7 @@ class App extends Component {
           </Container>
         </Grid>
 
-        <Grid item xs={2} spacing={3}>
+        <Grid item xs={2}>
           <UserList
             setProfileQuery={this.setProfileQuery}
             clearResults={this.clearResults}

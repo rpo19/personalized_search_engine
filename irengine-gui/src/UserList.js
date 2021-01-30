@@ -21,14 +21,6 @@ class UserList extends Component {
         this.handleClick = this.handleClick.bind(this);
         this.setUsers = this.setUsers.bind(this);
         this.handleUserClick = this.handleUserClick.bind(this);
-        this.onUserProfileReceived = this.onUserProfileReceived.bind(this);
-    }
-
-    onUserProfileReceived(doc) {
-        this.props.setProfileQuery(doc['_source']['top_tfidf'].join(" "));
-        this.setState({
-            current_user_source: doc['_source']
-        });
     }
 
     handleUserClick(screen_name) {
@@ -36,6 +28,9 @@ class UserList extends Component {
             current_user: screen_name,
             showList: !this.state.showList
         });
+
+        this.props.setProfileQuery(
+            this.state.sources[screen_name]['top_tfidf'].join(" "));
         // get data of current user
 
         // Helper.getUserProfile(
