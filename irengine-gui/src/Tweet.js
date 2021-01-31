@@ -10,9 +10,9 @@ class Tweet extends Component {
     /*
         process text to highlight hashtags specially matched ones
     */
-    process_text(value, highlight) {
+    process_text(value) {
 
-        var text = value.highlight.full_text ?
+        var text = ('highlight' in value && 'full_text' in value.highlight) ?
             value.highlight.full_text[0] : value._source.full_text;
 
         const hashtags = value._source.entities.hashtags;
@@ -25,12 +25,12 @@ class Tweet extends Component {
                         .includes(hashtags[i]['text'])) {
                             text = text.replace(
                                 new RegExp("#"+hashtags[i]['text'], "g"),
-                                "<mark>#"+hashtags[i]['text']+"</mark>"
+                                "<mark class=\"qmatch\">#"+hashtags[i]['text']+"</mark>"
                                 );
                 } else {
                     text = text.replace(
                         new RegExp("#"+hashtags[i]['text'], "g"),
-                        "<b>#"+hashtags[i]['text']+"</b>"
+                        "<mark class=\"hashtag\">#"+hashtags[i]['text']+"</mark>"
                         );
                 }
             }
@@ -77,7 +77,7 @@ class Tweet extends Component {
                             <Box mb={2} mr={2} ml={4} >
                                 <div dangerouslySetInnerHTML={{
                                     __html: this.process_text(
-                                        this.props.value, this.props.value.highlight)
+                                        this.props.value)
                                 }} />
                             </Box>
                         </Grid>

@@ -4,7 +4,9 @@ import {
     TextField,
     Button,
     Grid,
-    Box
+    Box,
+    Switch,
+    FormControlLabel
 } from '@material-ui/core';
 import config from './Config';
 
@@ -15,34 +17,15 @@ class Search extends Component {
         this.state = {
             corpus: '',
             hashtag: '',
-            basic: true,
         }
         this.handleCorpus = this.handleCorpus.bind(this);
         this.handleHashtags = this.handleHashtags.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.search = this.search.bind(this);
     }
 
     handleSubmit(event) {
-        if (this.state.basic) {
-            Helper.basicQuery(
-                config.ELASTICSEARCH_URL,
-                config.ELASTICSEARCH_RETRIEVAL_INDEX,
-                this.state.corpus,
-                this.state.hashtag,
-                this.props.onResults,
-                (error) => { console.log(error) }
-            );
-        } else {
-            Helper.advancedQuery(
-                config.ELASTICSEARCH_URL,
-                config.ELASTICSEARCH_RETRIEVAL_INDEX,
-                this.state.corpus,
-                this.props.profileQuery,
-                this.props.onResults,
-                (error) => { console.log(error) }
-            );
-        }
-
+        this.search();
         event.preventDefault();
     }
 
@@ -58,42 +41,51 @@ class Search extends Component {
         });
     }
 
-    render() {
+    search() {
+        if (this.props.basic) {
+            Helper.basicQuery(
+                config.ELASTICSEARCH_URL,
+                config.ELASTICSEARCH_RETRIEVAL_INDEX,
+                this.state.corpus,
+                this.state.hashtag,
+                this.props.onResults,
+                (error) => {
+                    console.log("Error:Search/handleSubmit/basicQuery");
+                    console.log(error);
+                }
+            );
+        } else {
+            Helper.advancedQuery(
+                config.ELASTICSEARCH_URL,
+                config.ELASTICSEARCH_RETRIEVAL_INDEX,
+                this.state.corpus,
+                this.props.profileQuery,
+                this.props.onResults,
+                (error) => {
+                    console.log("Error:Search/handleSubmit/advancedQuery");
+                    console.log(error);
+                }
+            );
+        }
+    }
 
-        const basic = this.state.basic ? "contained" : "outlined";
-        const advanced = this.state.basic ? "outlined" : "contained";
+    render() {
 
         return (
             <Grid container spacing={1}>
                 <Grid item xs={2}>
-                    <Grid item xs={6}>
-                        <Button
-                            onClick={() => {
-                                this.setState({ basic: true });
-                                this.props.clearResults()
-                            }
-                            }
-                            color="primary"
-                            variant={basic}
-                            fullWidth
-                        >
-                            Basic
-                        </Button>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Button
-                            onClick={() => {
-                                this.setState({ basic: false });
-                                this.props.clearResults()
-                            }
-                            }
-                            color="primary"
-                            variant={advanced}
-                            fullWidth
-                        >
-                            Advanced
-                        </Button>
-                    </Grid>
+                    <FormControlLabel
+                        value="top"
+                        control={
+                            <Switch color="primary" onClick={() => {
+                                this.props.basicAdvancedSwitch();
+                                this.props.clearResults();
+                            }}
+                            />
+                        }
+                        label="Advanced"
+                        labelPlacement="bottom"
+                    />
                 </Grid>
                 <Grid item xs={9}>
                     <form onSubmit={this.handleSubmit}>
@@ -104,7 +96,7 @@ class Search extends Component {
                                 fullWidth
                             />
                         </Box>
-                        {this.state.basic &&
+                        {this.props.basic &&
                             <Box m={2} display="block">
                                 <TextField variant="outlined" type="text"
                                     value={this.state.hashtag}

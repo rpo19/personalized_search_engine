@@ -30,7 +30,8 @@ class UserList extends Component {
         });
 
         this.props.setProfileQuery(
-            this.state.sources[screen_name]['top_tfidf'].join(" "));
+            this.state.sources[screen_name]['top_tfidf'].join(" "),
+            this.props.search);
         // get data of current user
 
         // Helper.getUserProfile(
@@ -41,7 +42,8 @@ class UserList extends Component {
         //     (error) => console.log(error)
         // )
 
-        this.props.clearResults();
+        // this.props.clearResults();
+        // this.props.search();
     }
 
     setUsers(results) {
@@ -81,13 +83,16 @@ class UserList extends Component {
                 config.ELASTICSEARCH_URL,
                 config.ELASTICSEARCH_USERS_INDEX,
                 this.setUsers,
-                (error) => console.log(error)
+                (error) => {
+                    console.log("Error:UserList/handleClick");
+                    console.log(error);
+                }
             )
         }
         this.setState({ showList: !this.state.showList });
 
 
-        this.props.clearResults();
+        // this.props.clearResults();
     }
 
     render() {
@@ -120,8 +125,11 @@ class UserList extends Component {
                         <User
                             source={this.state.sources[this.state.current_user]}
                             onClick={() => {
-                                this.setState({ current_user: null });
-                                this.props.clearResults()
+                                this.setState({ current_user: null },
+                                    () => {
+                                        this.props.setProfileQuery(null,
+                                            this.props.search);
+                                    });
                             }
                             }
                             extended={true}
@@ -138,7 +146,7 @@ class UserList extends Component {
                         </Fab>
                     </Box>
                     <Box m={1} display="inline">
-                        Login
+                        Click to login
                     </Box>
                 </Paper>
             );

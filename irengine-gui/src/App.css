@@ -12,11 +12,21 @@ ul {
     text-align: center;
 }
 
-.icon {
+img.icon {
     max-width: 50px;
     max-height: 50px;
 }
 
-mark {
+mark.qmatch{
     background-color: aquamarine;
+}
+
+mark.pmatch {
+    background-color: deeppink;
+}
+
+mark.hashtag {
+    color: cornflowerblue;
+    background-color: transparent;
+    font-weight: bold;
 }

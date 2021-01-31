@@ -1,7 +1,8 @@
 import {
     Avatar,
     Box,
-    FormControlLabel
+    FormControlLabel,
+    Switch
 } from '@material-ui/core';
 import { Component } from 'react';
 

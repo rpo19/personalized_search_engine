@@ -37,48 +37,51 @@ class Helper {
     */
     static advancedQuery(host, index, query, profileQuery,
         handleResults, handleErrors) {
+
+        let queryObject = {
+            query: {
+                bool: {
+                    must: {
+                        match: {
+                            full_text: {
+                                query: query,
+                                fuzziness: "AUTO",
+                                boost: 2,
+                            }
+                        },
+                    },
+                }
+            },
+            highlight: {
+                fields: {
+                    full_text: {
+                        pre_tags: "<mark class=\"qmatch\">",
+                        post_tags: "</mark>"
+                    }
+                }
+            }
+        };
+
+        if (profileQuery) {
+            queryObject.query.bool.should = {
+                match: {
+                    full_text: {
+                        query: profileQuery,
+                        fuzziness: "AUTO:6,12",
+                        prefix_length: 2,
+                        fuzzy_transpositions: false,
+                        boost: 0.4,
+                    }
+                }
+            };
+        }
+
         const requestOptions = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                query: {
-                    bool: {
-                        must: {
-                            match: {
-                                full_text: {
-                                    query: query,
-                                    // boost: 4,
-                                }
-                            },
-                        },
-                        should: {
-                            match: {
-                                full_text: {
-                                    query: profileQuery,
-                                    // boost: 0.1,
-                                }
-                            }
-                        }
-                    }
-                },
-                highlight: {
-                    fields: {
-                        full_text: {
-                            highlight_query: {
-                                match: {
-                                    full_text: {
-                                        query: query
-                                    }
-                                }
-                            },
-                            pre_tags: "<mark>",
-                            post_tags: "</mark>"
-                        }
-                    }
-                }
-            })
+            body: JSON.stringify(queryObject)
         };
 
         fetch(host + '/' + index + "/_search", requestOptions)
@@ -118,7 +121,7 @@ class Helper {
                 highlight: {
                     fields: {
                         full_text: {
-                            pre_tags: "<mark>",
+                            pre_tags: "<mark class=\"qmatch\">",
                             post_tags: "</mark>"
                         },
                         "entities.hashtags.text": {
