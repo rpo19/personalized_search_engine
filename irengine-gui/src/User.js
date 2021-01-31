@@ -2,7 +2,7 @@ import {
     Avatar,
     Box,
     FormControlLabel,
-    Switch
+    Button
 } from '@material-ui/core';
 import { Component } from 'react';
 
@@ -84,6 +84,14 @@ class User extends Component {
                                 {this.props.source['emoji'].join(" ")}
                             </span>
                         </Box>
+                    </li>
+                    <li>
+                        <Button p={2} variant="outlined"
+                            color="secondary"
+                            onClick={this.props.onClick}
+                        >
+                            Logout
+                        </Button>
                     </li>
                 </ul>
             )
