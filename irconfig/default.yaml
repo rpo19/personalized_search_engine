@@ -13,11 +13,11 @@ elasticsearch_indices:
       }
   usertweets:
     name: usertweets
-    file: mappings/tweets.json
+    file: irconfig/mappings/tweets.json
 
   retrievalbase:
     name: retrievalbase
-    file: mappings/tweets.json
+    file: irconfig/mappings/tweets.json
 
 users:
   - name: BarackObama

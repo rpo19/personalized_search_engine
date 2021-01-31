@@ -21,6 +21,7 @@ services:
         hard: -1
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
+      - ./irconfig/synonym/wn_s.pl:/usr/share/elasticsearch/config/wn_s.pl
     ports:
       - 9200:9200
     restart: $RESTART
