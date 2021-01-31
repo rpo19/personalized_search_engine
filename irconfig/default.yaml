@@ -42,3 +42,7 @@ retrievalbase:
     count: 100
   - name: USATODAY
     count: 100
+  - name: FOXSports
+    count: 100
+  - name: BBCSport
+    count: 100
