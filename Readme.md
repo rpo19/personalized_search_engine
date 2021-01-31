@@ -80,7 +80,10 @@ docker-compose run --rm -T irengine --help
 - Install Elasticsearch 7 following the official documentation at
   https://www.elastic.co/guide/en/elasticsearch/reference/current/install-elasticsearch.html.
   
-- Start Elasticsearch
+- Put synonyms file in `elasticsearch/config` folder; get it from
+  `irconfig/synonym/wn_s.pl`.
+
+- Start Elasticsearch.
 
 #### IRengine
 
