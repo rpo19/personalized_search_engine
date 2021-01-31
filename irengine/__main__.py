@@ -6,9 +6,7 @@ import click
 import time
 import itertools
 from collections import Counter
-#from nltk.tokenize import TweetTokenizer
-#import emoji
-
+import sys
 
 def create_indices(es, config):
     for index in config['elasticsearch_indices'].values():
@@ -204,10 +202,24 @@ def get_users_profile(es, config, force=False):
               help='Force user profile creation. Overwrite if already exists.')
 @click.option('-n', '--no-tweets', is_flag=True, default=False,
               help='Skip Tweets download.')
-def main(config_path, force_profile, no_tweets):
+@click.option('-t', '--elasticseatch-wait-time', default=20,
+              help='Wait time for Elasticsearch to correctly start in seconds.')
+def main(config_path, force_profile, no_tweets, elasticseatch_wait_time):
     config = irengine.config.Config().load_config(path=config_path).get_config()
 
     es = Elasticsearch(config["elasticsearch_hosts"])
+
+    # wait for elasticsearch
+    i = 0
+    print("Waiting for Elasticsearch...")
+    while not es.ping() and i < elasticseatch_wait_time:
+        time.sleep(1)
+        i += 1
+    if i >= elasticseatch_wait_time:
+        print("Cannot reach Elasticsearch.")
+        sys.exit(2)
+
+    es.cluster.health(wait_for_status='yellow', request_timeout=5)
 
     auth = tweepy.OAuthHandler(config['twitter']['consumer_key'],
                                config['twitter']['consumer_secret'])
