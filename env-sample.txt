@@ -1,5 +1,7 @@
 # whether to restart automatically docker-compose services
 RESTART=no
+# listen address
+LISTEN_ADDRESS=127.0.0.1
 # enable elasticsearch CORS
 ELASTICSEARCH_CORS=true
 # CORS allowed url regex; this allows everything from localhost

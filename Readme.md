@@ -66,6 +66,8 @@ You need Docker (https://docs.docker.com/get-docker/) and Compose
   ```
   from the project root.
 
+- Open http://localhost:8080/.
+
 #### Run IRengine manually
 In case you need to run IRengine with custom arguments (e.g. to force users'
 profiles recreation):
