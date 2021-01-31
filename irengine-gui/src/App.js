@@ -84,11 +84,14 @@ class App extends Component {
 
     const results = typeof this.state.queryResults == "string" ?
       (
-        <Paper>
-          <Box m={2} className="noresults">
-            {this.state.queryResults}
-          </Box>
-        </Paper>
+
+        <Box className="noresultscontainer">
+          <Paper>
+            <Box p={4} className="noresults">
+              {this.state.queryResults}
+            </Box>
+          </Paper>
+        </Box>
       ) :
       (
         <Results value={this.state.queryResults} />
@@ -96,10 +99,10 @@ class App extends Component {
 
     const credits = typeof this.state.queryResults == "string" ? (
       <Credits />
-    ) : 
-    (
-      <a></a>
-    );
+    ) :
+      (
+        <a></a>
+      );
 
     return (
       <Grid container spacing={1}>

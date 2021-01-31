@@ -119,8 +119,6 @@ class Helper {
                                 match: {
                                     full_text: {
                                         query: corpus,
-                                        prefix_length: 1,
-                                        fuzziness: "AUTO",
                                         analyzer: "english"
                                     }
                                 }
