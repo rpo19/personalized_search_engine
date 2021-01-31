@@ -29,8 +29,8 @@ class UserList extends Component {
             showList: !this.state.showList
         });
 
-        this.props.setProfileQuery(
-            this.state.sources[screen_name]['top_tfidf'].join(" "),
+        this.props.setProfile(
+            this.state.sources[screen_name],
             this.props.search);
         // get data of current user
 
@@ -127,7 +127,7 @@ class UserList extends Component {
                             onClick={() => {
                                 this.setState({ current_user: null },
                                     () => {
-                                        this.props.setProfileQuery(null,
+                                        this.props.setProfile(null,
                                             this.props.search);
                                     });
                             }

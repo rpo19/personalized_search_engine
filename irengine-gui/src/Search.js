@@ -59,7 +59,7 @@ class Search extends Component {
                 config.ELASTICSEARCH_URL,
                 config.ELASTICSEARCH_RETRIEVAL_INDEX,
                 this.state.corpus,
-                this.props.profileQuery,
+                this.props.profile,
                 this.props.onResults,
                 (error) => {
                     console.log("Error:Search/handleSubmit/advancedQuery");

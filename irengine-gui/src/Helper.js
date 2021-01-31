@@ -35,7 +35,7 @@ class Helper {
     /*
     Takes care of user profiles
     */
-    static advancedQuery(host, index, query, profileQuery,
+    static advancedQuery(host, index, query, profile,
         handleResults, handleErrors) {
 
         let queryObject = {
@@ -47,7 +47,7 @@ class Helper {
                                 query: query,
                                 prefix_length: 1,
                                 fuzziness: "AUTO",
-                                boost: 2,
+                                boost: 5,
                             }
                         },
                     },
@@ -63,18 +63,32 @@ class Helper {
             }
         };
 
-        if (profileQuery) {
-            queryObject.query.bool.should = {
-                match: {
-                    full_text: {
-                        query: profileQuery,
-                        fuzziness: "AUTO:6,12",
-                        prefix_length: 2,
-                        fuzzy_transpositions: false,
-                        boost: 0.4,
+        if (profile) {
+            queryObject.query.bool.should = [
+                {
+                    match: {
+                        full_text: {
+                            query: profile["top_tfidf"].join(" "),
+                            fuzziness: "AUTO:6,12",
+                            prefix_length: 2,
+                            fuzzy_transpositions: false,
+                            boost: 0.4,
+                            analyzer: "english"
+                        }
+                    }
+                },
+                {
+                    match: {
+                        "entities.hashtags.text": {
+                            query: profile["top_tfidf_hashtags"].join(" "),
+                            fuzziness: "AUTO:6,12",
+                            prefix_length: 2,
+                            fuzzy_transpositions: false,
+                            boost: 0.4
+                        }
                     }
                 }
-            };
+            ];
         }
 
         const requestOptions = {
@@ -106,14 +120,17 @@ class Helper {
                                     full_text: {
                                         query: corpus,
                                         prefix_length: 1,
-                                        fuzziness: "AUTO"
+                                        fuzziness: "AUTO",
+                                        analyzer: "english"
                                     }
                                 }
                             },
                             {
                                 match: {
                                     "entities.hashtags.text": {
-                                        query: hastags
+                                        query: hastags,
+                                        prefix_length: 1,
+                                        fuzziness: "AUTO"
                                     }
                                 }
                             }

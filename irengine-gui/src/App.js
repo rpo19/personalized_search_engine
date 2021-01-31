@@ -22,23 +22,23 @@ class App extends Component {
     super(props);
     this.state = {
       value: null,
-      queryResults: [],
-      profile_query: null,
+      queryResults: "Ready to search :)",
+      profile: null,
       basic: true,
     };
     this.handleResults = this.handleResults.bind(this);
-    this.setProfileQuery = this.setProfileQuery.bind(this);
+    this.setProfile = this.setProfile.bind(this);
     this.clearResults = this.clearResults.bind(this);
     this.basicAdvancedSwitch = this.basicAdvancedSwitch.bind(this);
 
     this.search = React.createRef();
   }
 
-  setProfileQuery(query, callback) {
+  setProfile(profile, callback) {
     this.setState({
-      profile_query: query,
+      profile: profile,
     },
-    callback);
+      callback);
   }
 
   clearResults(res) {
@@ -48,33 +48,44 @@ class App extends Component {
   }
 
   handleResults(res) {
-    const hits = res['hits']['hits'];
-    const results = hits.map((hit, idx) => {
-      return (
-        <li key={hit['_id']}>
-          <Tweet value={hit} />
-        </li>);
-    });
-
-    this.setState({
-      queryResults: results,
-    });
+    if ('hits' in res && 'hits' in res['hits']) {
+      const hits = res['hits']['hits'];
+      const results = hits.map((hit, idx) => {
+        return (
+          <li key={hit['_id']}>
+            <Tweet value={hit} />
+          </li>);
+      });
+      if (results.length > 0) {
+        this.setState({
+          queryResults: results,
+        });
+      } else {
+        this.setState({
+          queryResults: "Your query didn't produce any results :(",
+        });
+      }
+    } else {
+      this.setState({
+        queryResults: "Ooops, something went wrong :(",
+      });
+    }
   }
 
   basicAdvancedSwitch() {
     this.setState({
       basic: !this.state.basic,
     },
-    this.search.current.search);
+      this.search.current.search);
   }
 
   render() {
 
-    let results = this.state.queryResults.length === 0 ?
+    let results = typeof this.state.queryResults == "string" ?
       (
         <Paper>
           <Box m={2} className="noresults">
-            Your query didn't produce any results :(
+            {this.state.queryResults}
           </Box>
         </Paper>
       ) :
@@ -88,7 +99,7 @@ class App extends Component {
           <Search
             ref={this.search}
             onResults={this.handleResults}
-            profileQuery={this.state.profile_query}
+            profile={this.state.profile}
             clearResults={this.clearResults}
             basic={this.state.basic}
             basicAdvancedSwitch={this.basicAdvancedSwitch}
@@ -102,7 +113,7 @@ class App extends Component {
         {!this.state.basic &&
           <Grid item xs={2}>
             <UserList
-              setProfileQuery={this.setProfileQuery}
+              setProfile={this.setProfile}
               clearResults={this.clearResults}
               search={this.search.current.search}
             />
