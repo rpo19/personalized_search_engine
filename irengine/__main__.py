@@ -205,6 +205,12 @@ def get_users_profile(es, config, force=False):
 @click.option('-t', '--elasticseatch-wait-time', default=20,
               help='Wait time for Elasticsearch to correctly start in seconds.')
 def main(config_path, force_profile, no_tweets, elasticseatch_wait_time):
+    """
+    IRengine
+
+    Python application which gets tweets from Twitter, ingest them into
+    elasticsearch and creates users profiles.
+    """
     config = irengine.config.Config().load_config(path=config_path).get_config()
 
     es = Elasticsearch(config["elasticsearch_hosts"])
@@ -234,6 +240,7 @@ def main(config_path, force_profile, no_tweets, elasticseatch_wait_time):
         get_user_tweets(api, es, config)
         get_retrievalbase_tweets(api, es, config)
 
+    # give a second to elasticsearch for indexing
     time.sleep(1)
 
     get_users_profile(es, config, force=force_profile)

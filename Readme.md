@@ -4,8 +4,8 @@
 
 ### IRengine
 
-Python application which gets tweets from Twitter and puts them into
-elasticsearch.
+Python application which gets tweets from Twitter, ingest them into
+elasticsearch and creates users profiles.
 
 ### IRengine GUI
 
