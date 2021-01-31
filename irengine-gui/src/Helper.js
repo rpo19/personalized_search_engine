@@ -45,6 +45,7 @@ class Helper {
                         match: {
                             full_text: {
                                 query: query,
+                                prefix_length: 1,
                                 fuzziness: "AUTO",
                                 boost: 2,
                             }
@@ -104,7 +105,8 @@ class Helper {
                                 match: {
                                     full_text: {
                                         query: corpus,
-										fuzziness: "AUTO"
+                                        prefix_length: 1,
+                                        fuzziness: "AUTO"
                                     }
                                 }
                             },
