@@ -100,7 +100,8 @@ class Helper {
                             {
                                 match: {
                                     full_text: {
-                                        query: corpus
+                                        query: corpus,
+										fuzziness: "AUTO"
                                     }
                                 }
                             },
