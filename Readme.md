@@ -177,3 +177,12 @@ In case you're using docker the GUI service in docker-compose is already able to
 call elasticsearch, but in case you need to access elasticsearch from a
 development server you can put the correct configuration inside docker-compose
 `.env` file.
+
+## Credits
+
+#### WordNet
+
+George A. Miller (1995). WordNet: A Lexical Database for English.
+Communications of the ACM Vol. 38, No. 11: 39-41.
+
+Christiane Fellbaum (1998, ed.) WordNet: An Electronic Lexical Database. Cambridge, MA: MIT Press.

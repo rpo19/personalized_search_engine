@@ -12,6 +12,7 @@ import {
   Box,
   Container
 } from '@material-ui/core';
+import Credits from './Credits'
 
 const theme = {
   spacing: 4,
@@ -120,7 +121,7 @@ class App extends Component {
           </Grid>
         }
 
-
+        <Credits />
 
       </Grid>
     );

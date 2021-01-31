@@ -30,3 +30,10 @@ mark.hashtag {
     background-color: transparent;
     font-weight: bold;
 }
+
+.credits {
+    position:fixed;
+    left:0px;
+    bottom:0px;
+    width:100%;
+ }
