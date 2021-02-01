@@ -1,6 +1,6 @@
 const config = {
     ELASTICSEARCH_URL: '/elasticsearch',
-    ELASTICSEARCH_RETRIEVAL_INDEX: 'usertweets',
+    ELASTICSEARCH_RETRIEVAL_INDEX: 'retrievalbase',
     ELASTICSEARCH_USERS_INDEX: 'users',
 }
 
