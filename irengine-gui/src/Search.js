@@ -19,8 +19,8 @@ class Search extends Component {
             hashtag: '',
             fuzzy: false,
             synonmym: false,
-            profileBoost: 0.1,
-            showProfileBoost: true,
+            profileBoost: 1,
+            showProfileBoost: false,
         }
         this.handleCorpus = this.handleCorpus.bind(this);
         this.handleHashtags = this.handleHashtags.bind(this);
@@ -46,7 +46,7 @@ class Search extends Component {
         });
     }
 
-    handleProfileBoost (event) {
+    handleProfileBoost(event) {
         this.setState({
             profileBoost: event.target.value
         });
@@ -54,34 +54,42 @@ class Search extends Component {
 
     search() {
         if (this.props.basic) {
-            Helper.basicQuery(
-                config.ELASTICSEARCH_URL,
-                config.ELASTICSEARCH_RETRIEVAL_INDEX,
-                this.state.corpus,
-                this.state.hashtag,
-                this.state.fuzzy,
-                this.state.synonmym,
-                this.props.onResults,
-                (error) => {
-                    console.log("Error:Search/handleSubmit/basicQuery");
-                    console.log(error);
-                }
-            );
+            if (this.state.corpus.length > 0 || this.state.hashtag.length > 0) {
+                Helper.basicQuery(
+                    config.ELASTICSEARCH_URL,
+                    config.ELASTICSEARCH_RETRIEVAL_INDEX,
+                    this.state.corpus,
+                    this.state.hashtag,
+                    this.state.fuzzy,
+                    this.state.synonmym,
+                    this.props.onResults,
+                    (error) => {
+                        console.log("Error:Search/handleSubmit/basicQuery");
+                        console.log(error);
+                    }
+                );
+            } else {
+                this.props.onResults("Ready to search :)");
+            }
         } else {
-            Helper.advancedQuery(
-                config.ELASTICSEARCH_URL,
-                config.ELASTICSEARCH_RETRIEVAL_INDEX,
-                this.state.corpus,
-                this.props.profile,
-                this.state.fuzzy,
-                this.state.synonmym,
-                this.state.profileBoost,
-                this.props.onResults,
-                (error) => {
-                    console.log("Error:Search/handleSubmit/advancedQuery");
-                    console.log(error);
-                }
-            );
+            if (this.state.corpus.length > 0 || this.props.profile) {
+                Helper.advancedQuery(
+                    config.ELASTICSEARCH_URL,
+                    config.ELASTICSEARCH_RETRIEVAL_INDEX,
+                    this.state.corpus,
+                    this.props.profile,
+                    this.state.fuzzy,
+                    this.state.synonmym,
+                    this.state.profileBoost,
+                    this.props.onResults,
+                    (error) => {
+                        console.log("Error:Search/handleSubmit/advancedQuery");
+                        console.log(error);
+                    }
+                );
+            } else {
+                this.props.onResults("Ready to search :)");
+            }
         }
     }
 
@@ -106,7 +114,7 @@ class Search extends Component {
                                 this.setState({
                                     fuzzy: !this.state.fuzzy
                                 },
-                                this.search);
+                                    this.search);
                             }}
                             />
                         }
@@ -119,7 +127,7 @@ class Search extends Component {
                                 this.setState({
                                     synonmym: !this.state.synonmym
                                 },
-                                this.search);
+                                    this.search);
                             }}
                             />
                         }

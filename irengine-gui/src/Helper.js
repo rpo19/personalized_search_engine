@@ -39,49 +39,9 @@ class Helper {
         profileBoost,
         handleResults, handleErrors) {
 
-        let should = [
-            {
-                match: {
-                    full_text: {
-                        query: query,
-                        analyzer: "english"
-                    }
-                }
-            }
-        ];
-
-        if (fuzzy) {
-            should.push({
-                match: {
-                    full_text: {
-                        query: query,
-                        fuzziness: "AUTO",
-                        analyzer: "english"
-                    }
-                },
-            });
-        }
-
-        if (synonym) {
-            should.push({
-                match: {
-                    full_text: {
-                        query: query,
-                        analyzer: "english_synonym"
-                    }
-                },
-            });
-        }
-
         let queryObject = {
             query: {
-                bool: {
-                    must: {
-                        bool: {
-                            should: should,
-                        }
-                    }
-                }
+                bool: {}
             },
             highlight: {
                 fields: {
@@ -92,6 +52,49 @@ class Helper {
                 }
             }
         };
+
+        if (query.length > 0) {
+            console.log("adding must");
+            let must = {
+                bool: {
+                    should: [
+                        {
+                            match: {
+                                full_text: {
+                                    query: query,
+                                    analyzer: "english"
+                                }
+                            }
+                        }
+                    ]
+                }
+            };
+
+            if (fuzzy) {
+                must.bool.should.push({
+                    match: {
+                        full_text: {
+                            query: query,
+                            fuzziness: "AUTO",
+                            analyzer: "english"
+                        }
+                    },
+                });
+            }
+
+            if (synonym) {
+                must.bool.should.push({
+                    match: {
+                        full_text: {
+                            query: query,
+                            analyzer: "english_synonym"
+                        }
+                    },
+                });
+            }
+
+            queryObject.query.bool.must = must;
+        }
 
         if (profile) {
             queryObject.query.bool.should = [

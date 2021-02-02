@@ -49,6 +49,12 @@ class App extends Component {
   }
 
   handleResults(res) {
+    if (typeof res == "string") {
+      this.setState({
+        queryResults: res,
+      });
+      return;
+    }
     if ('hits' in res && 'hits' in res['hits']) {
       const hits = res['hits']['hits'];
       const results = hits.map((hit, idx) => {

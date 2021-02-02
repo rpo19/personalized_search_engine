@@ -20,18 +20,18 @@ class Tweet extends Component {
         if (hashtags.length > 0) {
             let i = 0;
             for (; i < hashtags.length; i++) {
-                if ('entities.hashtags.text' in value.highlight &&
-                        value.highlight["entities.hashtags.text"]
+                if ('highlight' in value && 'entities.hashtags.text' in value.highlight &&
+                    value.highlight["entities.hashtags.text"]
                         .includes(hashtags[i]['text'])) {
-                            text = text.replace(
-                                new RegExp("#"+hashtags[i]['text'], "g"),
-                                "<mark class=\"qmatch\">#"+hashtags[i]['text']+"</mark>"
-                                );
+                    text = text.replace(
+                        new RegExp("#" + hashtags[i]['text'], "g"),
+                        "<mark class=\"qmatch\">#" + hashtags[i]['text'] + "</mark>"
+                    );
                 } else {
                     text = text.replace(
-                        new RegExp("#"+hashtags[i]['text'], "g"),
-                        "<mark class=\"hashtag\">#"+hashtags[i]['text']+"</mark>"
-                        );
+                        new RegExp("#" + hashtags[i]['text'], "g"),
+                        "<mark class=\"hashtag\">#" + hashtags[i]['text'] + "</mark>"
+                    );
                 }
             }
         }
