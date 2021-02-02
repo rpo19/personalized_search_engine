@@ -98,78 +98,86 @@ class Search extends Component {
         return (
             <Grid container spacing={1}>
                 <Grid item xs={2}>
-                    <FormControlLabel
-                        control={
-                            <Switch color="primary" onClick={() => {
-                                this.props.basicAdvancedSwitch();
-                            }}
+                    <ul>
+                        <li>
+                            <FormControlLabel display="block"
+                                control={
+                                    <Switch color="primary" onClick={() => {
+                                        this.props.basicAdvancedSwitch();
+                                    }}
+                                    />
+                                }
+                                label="Advanced"
+                                labelPlacement="bottom"
                             />
-                        }
-                        label="Advanced"
-                        labelPlacement="bottom"
-                    />
-                    <FormControlLabel
-                        control={
-                            <Switch color="primary" onClick={() => {
-                                this.setState({
-                                    fuzzy: !this.state.fuzzy
-                                },
-                                    this.search);
-                            }}
+                        </li>
+                        <li>
+                            <FormControlLabel display="block"
+                                control={
+                                    <Switch color="primary" onClick={() => {
+                                        this.setState({
+                                            fuzzy: !this.state.fuzzy
+                                        },
+                                            this.search);
+                                    }}
+                                    />
+                                }
+                                label="Fuzzy"
+                                labelPlacement="bottom"
                             />
-                        }
-                        label="Fuzzy"
-                        labelPlacement="bottom"
-                    />
-                    <FormControlLabel
-                        control={
-                            <Switch color="primary" onClick={() => {
-                                this.setState({
-                                    synonmym: !this.state.synonmym
-                                },
-                                    this.search);
-                            }}
+                        </li>
+                        <li>
+                            <FormControlLabel display="block"
+                                control={
+                                    <Switch color="primary" onClick={() => {
+                                        this.setState({
+                                            synonmym: !this.state.synonmym
+                                        },
+                                            this.search);
+                                    }}
+                                    />
+                                }
+                                label="Synonyms"
+                                labelPlacement="bottom"
                             />
-                        }
-                        label="Synonyms"
-                        labelPlacement="bottom"
-                    />
+                        </li>
+                    </ul>
                 </Grid>
-                <Grid item xs={9}>
-                    <form onSubmit={this.handleSubmit}>
-                        <Box m={2} display="block">
-                            <TextField variant="outlined" type="text"
-                                value={this.state.corpus}
-                                onChange={this.handleCorpus} placeholder="Corpus"
-                                fullWidth
-                            />
-                        </Box>
-                        {this.props.basic &&
+                    <Grid item xs={9}>
+                        <form onSubmit={this.handleSubmit}>
                             <Box m={2} display="block">
                                 <TextField variant="outlined" type="text"
-                                    value={this.state.hashtag}
-                                    onChange={this.handleHashtags} placeholder="Hashtags"
+                                    value={this.state.corpus}
+                                    onChange={this.handleCorpus} placeholder="Corpus"
                                     fullWidth
                                 />
                             </Box>
-                        }
-                        {this.state.showProfileBoost &&
-                            <Box m={2} display="block">
-                                <TextField variant="outlined" type="text"
-                                    value={this.state.profileBoost}
-                                    onChange={this.handleProfileBoost} placeholder="ProfileBoost"
-                                    fullWidth
-                                />
-                            </Box>
-                        }
-                        <Box m={2} display="block" textAlign='center'>
-                            <Button type="submit" variant="outlined" color="primary">
-                                Search
+                            {this.props.basic &&
+                                <Box m={2} display="block">
+                                    <TextField variant="outlined" type="text"
+                                        value={this.state.hashtag}
+                                        onChange={this.handleHashtags} placeholder="Hashtags"
+                                        fullWidth
+                                    />
+                                </Box>
+                            }
+                            {this.state.showProfileBoost &&
+                                <Box m={2} display="block">
+                                    <TextField variant="outlined" type="text"
+                                        value={this.state.profileBoost}
+                                        onChange={this.handleProfileBoost} placeholder="ProfileBoost"
+                                        fullWidth
+                                    />
+                                </Box>
+                            }
+                            <Box m={2} display="block" textAlign='center'>
+                                <Button type="submit" variant="outlined" color="primary">
+                                    Search
                     </Button>
-                        </Box>
-                    </form>
-                </Grid>
-            </Grid >
+                            </Box>
+                        </form>
+                    </Grid>
+                </Grid >
         );
     }
 
