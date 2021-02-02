@@ -7,6 +7,7 @@ import time
 import itertools
 from collections import Counter
 import sys
+import os
 
 def create_indices(es, config):
     for index in config['elasticsearch_indices'].values():
@@ -65,25 +66,6 @@ def get_user_tweets(api, es, config):
 
 
 def get_users_profile(es, config, force=False):
-
-    # res = es.search(
-    #     index=config['elasticsearch_indices']['usertweets']['name'],
-    #     body={
-    #         'size': 1000,
-    #         'query': {
-    #             'match_all': {}
-    #             }
-    #         }
-    #     )
-
-    # hits = res['hits']['hits']
-
-    # corpus = [r['_source']['full_text'] for r in hits]
-    # hashtags_corpus = [[h['text']
-    #                  for h in r['_source']['entities']['hashtags']]
-    #                 for r in hits if r['_source']['entities']['hashtags']]
-
-    # corpus_processed = utils.preprocess_text(' '.join(corpus))
 
     users_data = {}
 
@@ -208,13 +190,17 @@ def get_users_profile(es, config, force=False):
               help='Skip Tweets download.')
 @click.option('-t', '--elasticseatch-wait-time', default=20,
               help='Wait time for Elasticsearch to correctly start in seconds.')
-def main(config_path, force_profile, no_tweets, elasticseatch_wait_time):
+@click.option('--import-usertweets', help='ElasticDump json file containing usertweets')
+@click.option('--import-retrievalbase', help='ElasticDump json file containing retrievalbase')
+def main(config_path, force_profile, no_tweets, elasticseatch_wait_time,
+    import_usertweets, import_retrievalbase):
     """
     IRengine
 
     Python application which gets tweets from Twitter, ingest them into
     elasticsearch and creates users profiles.
     """
+
     config = irengine.config.Config().load_config(path=config_path).get_config()
 
     es = Elasticsearch(config["elasticsearch_hosts"])
@@ -231,16 +217,38 @@ def main(config_path, force_profile, no_tweets, elasticseatch_wait_time):
 
     es.cluster.health(wait_for_status='yellow', request_timeout=5)
 
-    auth = tweepy.OAuthHandler(config['twitter']['consumer_key'],
-                               config['twitter']['consumer_secret'])
-    auth.set_access_token(config['twitter']['access_token'],
-                          config['twitter']['access_secret'])
+    if 'twitter' in config:
+        auth = tweepy.OAuthHandler(config['twitter']['consumer_key'],
+                                config['twitter']['consumer_secret'])
+        auth.set_access_token(config['twitter']['access_token'],
+                            config['twitter']['access_secret'])
 
-    api = tweepy.API(auth)
+        api = tweepy.API(auth)
+    else:
+        no_tweets = True
 
     create_indices(es, config)
 
-    if not no_tweets:
+    if import_retrievalbase or import_usertweets:
+        if import_usertweets:
+            print("Importing usertweets...")
+            cmd = f"""{config['elasticdump_binary']} \
+                --input={import_usertweets} \
+                --output={config['elasticsearch_hosts'][0]}/{config['elasticsearch_indices']['usertweets']['name']} \
+                --type=data"""
+            if os.system(cmd) != 0:
+                print("Something went wrong while importing usertweets!")
+
+        if import_retrievalbase:
+            print("Importing retrievalbase...")
+            cmd = f"""{config['elasticdump_binary']} \
+                --input={import_retrievalbase} \
+                --output={config['elasticsearch_hosts'][0]}/{config['elasticsearch_indices']['retrievalbase']['name']} \
+                --type=data"""
+            if os.system(cmd) != 0:
+                print("Something went wrong while importing retrievalbase!")
+
+    elif not no_tweets:
         get_user_tweets(api, es, config)
         get_retrievalbase_tweets(api, es, config)
 

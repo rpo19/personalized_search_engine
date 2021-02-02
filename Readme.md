@@ -36,7 +36,9 @@ By default `irconfig/local`; the docker container loads `irconfig/docker`.
 ### Twitter API
 
 Put your twitter API credentials into `irconfig/secrets.yaml`.
-Take a look at the sample `irconfig/secrets-sample.txt`
+Take a look at the sample `irconfig/secrets-sample.txt`.
+
+Otherwise you could import tweets from a previously created dump. (See IRengine section)
 
 ## Setup
 
@@ -115,9 +117,40 @@ docker-compose run --rm -T irengine --help
   ```
   python -m irengine --help     # see the help
   # TODO mostrare help qui
+  ```
 
+##### Get tweets from Twitter
 
-  python -m irengine            # to get tweets and ingest them into elastic
+Just set Twitter api credentials as seen in "Configuration/Twitter API" section;
+then simply run:
+```
+python -m irengine            # to get tweets and ingest them into elastic
+```
+Alternatively import tweets from a previously created dump:
+
+- Excract the files from `data.zip`, then:
+
+**Using Docker**:
+
+- Put the two files `usertweets.json` and `retrievalbase.json` inside irconfig
+  folder
+- then run:
+  ```
+  docker-compose run -T --rm irengine --import-usertweets irconfig/usertweets.json --import-retrievalbase irconfig/retrievalbase.json
+  ```
+
+**Without Docker**:
+
+- install `elasticdump` (See
+  https://github.com/elasticsearch-dump/elasticsearch-dump)
+
+- Ensure `elasticdump_binary` in `default.yaml` contains the correct path of the elasticdump binary.
+
+- Locate the dump files `usertweets.json` and `retrievalbase.json`
+
+- then run
+  ```
+  python -m irengine --import-usertweets /path/to/usertweets.json --import-retrievalbase /path/to/retrievalbase.json
   ```
 
 #### IRengine GUI

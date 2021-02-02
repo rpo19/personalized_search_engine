@@ -1,0 +1,51 @@
+{
+    "mappings": {
+        "properties": {
+            "description": {
+                "type": "text"
+            },
+            "emoji": {
+                "type": "text"
+            },
+            "full_texts": {
+                "type": "text"
+            },
+            "location": {
+                "type": "text"
+            },
+            "name": {
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                }
+            },
+            "profile_image_url": {
+                "enabled": false
+            },
+            "screen_name": {
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                }
+            },
+            "top_hashtags": {
+                "type": "text"
+            },
+            "top_tfidf": {
+                "type": "text"
+            },
+            "top_tfidf_hashtags": {
+                "type": "text"
+            },
+            "top_words": {
+                "type": "text"
+            }
+        }
+    }
+}
