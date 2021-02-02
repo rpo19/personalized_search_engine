@@ -24,6 +24,7 @@ class App extends Component {
     this.state = {
       value: null,
       queryResults: "Ready to search :)",
+      queryResultsNum: 0,
       profile: null,
       basic: true,
     };
@@ -64,9 +65,14 @@ class App extends Component {
           </li>);
       });
       if (results.length > 0) {
+        const queryResultsNum = ('total' in res['hits'] &&
+          'value' in res['hits']['total']) ?
+          res['hits']['total']['value'] :
+          0;
         this.setState({
-          queryResults: results,
-        });
+            queryResults: results,
+            queryResultsNum: queryResultsNum
+          });
       } else {
         this.setState({
           queryResults: "Your query didn't produce any results :(",
@@ -100,7 +106,8 @@ class App extends Component {
         </Box>
       ) :
       (
-        <Results value={this.state.queryResults} />
+        <Results value={this.state.queryResults}
+          number={this.state.queryResultsNum} />
       );
 
     const credits = typeof this.state.queryResults == "string" ? (
