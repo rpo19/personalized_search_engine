@@ -33,11 +33,15 @@ def get_retrievalbase_tweets(api, es, config):
 
         if num < count:
             print('Getting tweets for retrievalbase from', account['name'])
-
+            i = 0
             for tweet in utils.getTweetsFromUser(api, username, count=count):
                 res = es.index(
                     index=config['elasticsearch_indices']['retrievalbase']['name'],
                     id=tweet.id_str, body=tweet._json)
+                if i % int(count/100) == 0:
+                    print(f"\r{i}/{count}", end="", flush=True)
+                i+=1
+            print(f"\r{count}/{count}")
 
 
 def get_user_tweets(api, es, config):
