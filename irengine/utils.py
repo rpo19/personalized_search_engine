@@ -9,7 +9,7 @@ import numpy as np
 from nltk.tokenize import TweetTokenizer
 import emoji
 
-PREPROCESS_FILTER_PATTERN = '^(https?|rt|[^A-Za-z0-9]+)$'
+PREPROCESS_FILTER_PATTERN = '^(https?.*|rt|[^A-Za-z0-9]+)$'
 FILTER_PATTERN = re.compile(PREPROCESS_FILTER_PATTERN)
 
 def getTweetsFromUser(api, username, count=200, start_date=None, tweet_mode='extended'):
@@ -59,12 +59,18 @@ def preprocess_text(text):
         for word in tweetTokenizer.tokenize(text):
             # lowercase
             word = word.lower()
+
+            is_hashtag = False
+            if word[0] == "#":
+                is_hashtag = True
+
             # removing punctiuation
             word = word.translate(str.maketrans('', '', string.punctuation))
 
             # todo: check if noun? NER
 
-            check = len(word) > 2 \
+            check = not is_hashtag \
+                and len(word) > 2 \
                 and not word.isnumeric() \
                 and word not in stop_words \
                 and not FILTER_PATTERN.match(word) \
@@ -91,7 +97,7 @@ def flat_list(l):
 
 def top_tfidf(doc, corpus, n=30, vectorizer=None):
     if not vectorizer:
-        vectorizer = TfidfVectorizer()
+        vectorizer = TfidfVectorizer(max_df=0.95)
         vectorizer.fit(corpus)
 
     tfidf_array = vectorizer.transform([doc])
