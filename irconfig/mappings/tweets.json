@@ -83,8 +83,7 @@
             },
             "full_text": {
                 "type": "text",
-                "analyzer": "english",
-                "search_analyzer": "english_synonym"
+                "analyzer": "english"
             },
             "id": {
                 "enabled": false

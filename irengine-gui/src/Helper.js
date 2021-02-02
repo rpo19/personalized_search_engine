@@ -35,22 +35,52 @@ class Helper {
     /*
     Takes care of user profiles
     */
-    static advancedQuery(host, index, query, profile,
+    static advancedQuery(host, index, query, profile, fuzzy, synonym,
+        profileBoost,
         handleResults, handleErrors) {
+
+        let should = [
+            {
+                match: {
+                    full_text: {
+                        query: query,
+                        analyzer: "english"
+                    }
+                }
+            }
+        ];
+
+        if (fuzzy) {
+            should.push({
+                match: {
+                    full_text: {
+                        query: query,
+                        fuzziness: "AUTO",
+                        analyzer: "english"
+                    }
+                },
+            });
+        }
+
+        if (synonym) {
+            should.push({
+                match: {
+                    full_text: {
+                        query: query,
+                        analyzer: "english_synonym"
+                    }
+                },
+            });
+        }
 
         let queryObject = {
             query: {
                 bool: {
                     must: {
-                        match: {
-                            full_text: {
-                                query: query,
-                                prefix_length: 1,
-                                fuzziness: "AUTO",
-                                boost: 5,
-                            }
-                        },
-                    },
+                        bool: {
+                            should: should,
+                        }
+                    }
                 }
             },
             highlight: {
@@ -69,11 +99,8 @@ class Helper {
                     match: {
                         full_text: {
                             query: profile["top_tfidf"].join(" "),
-                            fuzziness: "AUTO:6,12",
-                            prefix_length: 2,
-                            fuzzy_transpositions: false,
-                            boost: 0.4,
-                            analyzer: "english"
+                            analyzer: "english",
+                            boost: profileBoost
                         }
                     }
                 },
@@ -81,10 +108,7 @@ class Helper {
                     match: {
                         "entities.hashtags.text": {
                             query: profile["top_tfidf_hashtags"].join(" "),
-                            fuzziness: "AUTO:6,12",
-                            prefix_length: 2,
-                            fuzzy_transpositions: false,
-                            boost: 0.4
+                            boost: profileBoost
                         }
                     }
                 }
@@ -104,8 +128,67 @@ class Helper {
             .then(handleResults, handleErrors);
     }
 
-    static basicQuery(host, index, corpus, hastags,
+    static basicQuery(host, index, corpus, hastags, fuzzy, synonym,
         handleResults, handleErrors) {
+
+        let hastags_boost = 0.75;
+        if (fuzzy) {
+            hastags_boost += 0.75;
+        }
+        if (synonym) {
+            hastags_boost += 0.75;
+        }
+
+        let should = [
+            {
+                match: {
+                    full_text: {
+                        query: corpus,
+                        analyzer: "english"
+                    }
+                }
+            },
+            {
+                match: {
+                    "entities.hashtags.text.raw": {
+                        query: hastags,
+                        boost: hastags_boost
+                    }
+                }
+            },
+            {
+                match: {
+                    "entities.hashtags.text": {
+                        query: hastags,
+                        boost: hastags_boost
+                    }
+                }
+            }
+        ];
+
+        if (fuzzy) {
+            should.push({
+                match: {
+                    full_text: {
+                        query: corpus,
+                        fuzziness: "AUTO",
+                        analyzer: "english"
+                    }
+                },
+            });
+        }
+
+        if (synonym) {
+            should.push({
+                match: {
+                    full_text: {
+                        query: corpus,
+                        analyzer: "english_synonym"
+                    }
+                },
+            });
+        }
+
         const requestOptions = {
             method: 'POST',
             headers: {
@@ -114,25 +197,7 @@ class Helper {
             body: JSON.stringify({
                 query: {
                     bool: {
-                        should: [
-                            {
-                                match: {
-                                    full_text: {
-                                        query: corpus,
-                                        analyzer: "english"
-                                    }
-                                }
-                            },
-                            {
-                                match: {
-                                    "entities.hashtags.text": {
-                                        query: hastags,
-                                        prefix_length: 1,
-                                        fuzziness: "AUTO"
-                                    }
-                                }
-                            }
-                        ]
+                        should: should
                     }
                 },
                 highlight: {

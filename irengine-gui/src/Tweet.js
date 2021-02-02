@@ -13,7 +13,7 @@ class Tweet extends Component {
     process_text(value) {
 
         var text = ('highlight' in value && 'full_text' in value.highlight) ?
-            value.highlight.full_text[0] : value._source.full_text;
+            value.highlight.full_text.join(" ") : value._source.full_text;
 
         const hashtags = value._source.entities.hashtags;
 

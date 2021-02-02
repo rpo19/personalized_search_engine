@@ -17,11 +17,16 @@ class Search extends Component {
         this.state = {
             corpus: '',
             hashtag: '',
+            fuzzy: false,
+            synonmym: false,
+            profileBoost: 0.1,
+            showProfileBoost: true,
         }
         this.handleCorpus = this.handleCorpus.bind(this);
         this.handleHashtags = this.handleHashtags.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.search = this.search.bind(this);
+        this.handleProfileBoost = this.handleProfileBoost.bind(this);
     }
 
     handleSubmit(event) {
@@ -41,6 +46,12 @@ class Search extends Component {
         });
     }
 
+    handleProfileBoost (event) {
+        this.setState({
+            profileBoost: event.target.value
+        });
+    }
+
     search() {
         if (this.props.basic) {
             Helper.basicQuery(
@@ -48,6 +59,8 @@ class Search extends Component {
                 config.ELASTICSEARCH_RETRIEVAL_INDEX,
                 this.state.corpus,
                 this.state.hashtag,
+                this.state.fuzzy,
+                this.state.synonmym,
                 this.props.onResults,
                 (error) => {
                     console.log("Error:Search/handleSubmit/basicQuery");
@@ -60,6 +73,9 @@ class Search extends Component {
                 config.ELASTICSEARCH_RETRIEVAL_INDEX,
                 this.state.corpus,
                 this.props.profile,
+                this.state.fuzzy,
+                this.state.synonmym,
+                this.state.profileBoost,
                 this.props.onResults,
                 (error) => {
                     console.log("Error:Search/handleSubmit/advancedQuery");
@@ -75,15 +91,39 @@ class Search extends Component {
             <Grid container spacing={1}>
                 <Grid item xs={2}>
                     <FormControlLabel
-                        value="top"
                         control={
                             <Switch color="primary" onClick={() => {
                                 this.props.basicAdvancedSwitch();
-                                this.props.clearResults();
                             }}
                             />
                         }
                         label="Advanced"
+                        labelPlacement="bottom"
+                    />
+                    <FormControlLabel
+                        control={
+                            <Switch color="primary" onClick={() => {
+                                this.setState({
+                                    fuzzy: !this.state.fuzzy
+                                },
+                                this.search);
+                            }}
+                            />
+                        }
+                        label="Fuzzy"
+                        labelPlacement="bottom"
+                    />
+                    <FormControlLabel
+                        control={
+                            <Switch color="primary" onClick={() => {
+                                this.setState({
+                                    synonmym: !this.state.synonmym
+                                },
+                                this.search);
+                            }}
+                            />
+                        }
+                        label="Synonyms"
                         labelPlacement="bottom"
                     />
                 </Grid>
@@ -101,6 +141,15 @@ class Search extends Component {
                                 <TextField variant="outlined" type="text"
                                     value={this.state.hashtag}
                                     onChange={this.handleHashtags} placeholder="Hashtags"
+                                    fullWidth
+                                />
+                            </Box>
+                        }
+                        {this.state.showProfileBoost &&
+                            <Box m={2} display="block">
+                                <TextField variant="outlined" type="text"
+                                    value={this.state.profileBoost}
+                                    onChange={this.handleProfileBoost} placeholder="ProfileBoost"
                                     fullWidth
                                 />
                             </Box>
