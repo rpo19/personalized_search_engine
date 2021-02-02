@@ -83,7 +83,7 @@ def get_users_profile(es, config, force=False):
         res = es.search(
             index=config['elasticsearch_indices']['usertweets']['name'],
             body={
-                'size': 1000,
+                'size': 5000,
                 'query': {
                     'match': {
                         'user.screen_name': username
