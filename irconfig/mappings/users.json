@@ -7,9 +7,6 @@
             "emoji": {
                 "type": "text"
             },
-            "full_texts": {
-                "type": "text"
-            },
             "location": {
                 "type": "text"
             },
@@ -34,16 +31,10 @@
                     }
                 }
             },
-            "top_hashtags": {
-                "type": "text"
-            },
             "top_tfidf": {
                 "type": "text"
             },
             "top_tfidf_hashtags": {
-                "type": "text"
-            },
-            "top_words": {
                 "type": "text"
             }
         }
