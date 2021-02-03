@@ -164,12 +164,12 @@ def get_users_profile(es, config, force=False):
             'name',
             'profile_image_url',
             #
-            'top_words',
-            'top_hashtags',
+            # 'top_words',
+            # 'top_hashtags',
             'top_tfidf',
             'top_tfidf_hashtags',
             # 'text_tokens'
-            'full_texts',
+            # 'full_texts',
             # 'hashtags',
             'emoji'
         ]
