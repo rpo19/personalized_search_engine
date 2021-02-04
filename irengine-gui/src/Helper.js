@@ -44,6 +44,7 @@ class Helper {
                 bool: {}
             },
             highlight: {
+                number_of_fragments: 0,
                 fields: {
                     full_text: {
                         pre_tags: "<mark class=\"qmatch\">",
@@ -206,6 +207,7 @@ class Helper {
                     }
                 },
                 highlight: {
+                    number_of_fragments: 0,
                     fields: {
                         full_text: {
                             pre_tags: "<mark class=\"qmatch\">",
