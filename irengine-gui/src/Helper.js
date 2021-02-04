@@ -102,7 +102,7 @@ class Helper {
                     match: {
                         full_text: {
                             query: profile["top_tfidf"].join(" "),
-                            analyzer: "english",
+                            analyzer: "whitespace",
                             boost: profileBoost
                         }
                     }

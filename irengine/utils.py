@@ -8,6 +8,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
 from nltk.tokenize import TweetTokenizer
 import emoji
+from nltk.stem.porter import PorterStemmer
 
 PREPROCESS_FILTER_PATTERN = '^(https?.*|rt|[^A-Za-z0-9]+)$'
 FILTER_PATTERN = re.compile(PREPROCESS_FILTER_PATTERN)
@@ -45,12 +46,13 @@ def getTweetsFromUser(api, username, count=200, start_date=None, tweet_mode='ext
 
         yield tweet
 
-
 def preprocess_text(text):
 
     stop_words = nltk.corpus.stopwords.words('english')
     punctuation = string.punctuation
-    
+
+    # Elasticsearch uses porter stemmer
+    stemmer = PorterStemmer()
 
     tweetTokenizer = TweetTokenizer()       
     def helper(text):
@@ -77,9 +79,9 @@ def preprocess_text(text):
                 and word not in emoji.UNICODE_EMOJI['en']
 
             if check:
-                list_word.append(word.lower())
+                list_word.append(stemmer.stem(word))
             elif word in emoji.UNICODE_EMOJI['en']:
-                list_emoji.append(word.lower())
+                list_emoji.append(word)
         return list_word, list_emoji
     
     words, lemoji = helper(text)
