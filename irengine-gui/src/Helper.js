@@ -132,15 +132,15 @@ class Helper {
             .then(handleResults, handleErrors);
     }
 
-    static basicQuery(host, index, corpus, hastags, fuzzy, synonym,
+    static basicQuery(host, index, corpus, hashtags, fuzzy, synonym,
         handleResults, handleErrors) {
 
-        let hastags_boost = 0.75;
+        let hashtags_boost = 0.75;
         if (fuzzy) {
-            hastags_boost += 0.75;
+            hashtags_boost += 0.75;
         }
         if (synonym) {
-            hastags_boost += 0.75;
+            hashtags_boost += 0.75;
         }
 
         let should = [
@@ -155,8 +155,8 @@ class Helper {
             {
                 match: {
                     "entities.hashtags.text.raw": {
-                        query: hastags,
-                        boost: hastags_boost,
+                        query: hashtags,
+                        boost: hashtags_boost,
                         analyzer: "whitespace"
                     }
                 }
@@ -164,8 +164,8 @@ class Helper {
             {
                 match: {
                     "entities.hashtags.text": {
-                        query: hastags,
-                        boost: hastags_boost,
+                        query: hashtags,
+                        boost: hashtags_boost,
                         analyzer: "english"
                     }
                 }
