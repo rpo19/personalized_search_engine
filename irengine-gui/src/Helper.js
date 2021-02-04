@@ -155,7 +155,8 @@ class Helper {
                 match: {
                     "entities.hashtags.text.raw": {
                         query: hastags,
-                        boost: hastags_boost
+                        boost: hastags_boost,
+                        analyzer: "whitespace"
                     }
                 }
             },
@@ -163,7 +164,8 @@ class Helper {
                 match: {
                     "entities.hashtags.text": {
                         query: hastags,
-                        boost: hastags_boost
+                        boost: hastags_boost,
+                        analyzer: "english"
                     }
                 }
             }
