@@ -124,7 +124,7 @@ docker-compose run --rm -T irengine --help
 - Install requirements
     ```
     cd irengine
-    pip install -r requirements.yml
+    pip install -r requirements.txt
     cd ..
     ```
 
