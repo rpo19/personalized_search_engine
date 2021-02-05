@@ -145,7 +145,7 @@ class Helper {
             hashtags_boost += 1.2;
         }
 
-        let should = [
+        let corpus_should = [
             {
                 match: {
                     full_text: {
@@ -153,7 +153,10 @@ class Helper {
                         analyzer: "english"
                     }
                 }
-            },
+            }
+        ]
+
+        let hashtags_should = [
             {
                 match: {
                     "entities.hashtags.text.raw": {
@@ -175,7 +178,7 @@ class Helper {
         ];
 
         if (fuzzy) {
-            should.push({
+            corpus_should.push({
                 match: {
                     full_text: {
                         query: corpus,
@@ -187,7 +190,7 @@ class Helper {
         }
 
         if (synonym) {
-            should.push({
+            corpus_should.push({
                 match: {
                     full_text: {
                         query: corpus,
@@ -195,6 +198,28 @@ class Helper {
                     }
                 },
             });
+        }
+
+        let must = [];
+
+        if (corpus && corpus.length > 0) {
+            must.push(
+                {
+                    bool: {
+                        should: corpus_should
+                    }
+                }
+            );
+        }
+
+        if (hashtags && hashtags.length > 0) {
+            must.push(
+                {
+                    bool: {
+                        should: hashtags_should
+                    }
+                }
+            );
         }
 
         const requestOptions = {
@@ -205,7 +230,7 @@ class Helper {
             body: JSON.stringify({
                 query: {
                     bool: {
-                        should: should
+                        must: must
                     }
                 },
                 highlight: {
