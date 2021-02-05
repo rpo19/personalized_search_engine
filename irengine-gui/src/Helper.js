@@ -135,12 +135,14 @@ class Helper {
     static basicQuery(host, index, corpus, hashtags, fuzzy, synonym,
         handleResults, handleErrors) {
 
-        let hashtags_boost = 0.75;
+        const hashtags_boost_step = 0.80;
+
+        let hashtags_boost = hashtags_boost_step;
         if (fuzzy) {
-            hashtags_boost += 0.75;
+            hashtags_boost += hashtags_boost_step;
         }
         if (synonym) {
-            hashtags_boost += 0.75;
+            hashtags_boost += 1.2;
         }
 
         let should = [
