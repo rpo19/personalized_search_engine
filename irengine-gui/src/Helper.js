@@ -88,7 +88,8 @@ class Helper {
                     match: {
                         full_text: {
                             query: query,
-                            analyzer: "english_synonym"
+                            analyzer: "english_synonym",
+                            boost: 0.5
                         }
                     },
                 });
@@ -182,7 +183,8 @@ class Helper {
                 match: {
                     full_text: {
                         query: corpus,
-                        analyzer: "english_synonym"
+                        analyzer: "english_synonym",
+                        boost: 0.5
                     }
                 },
             });
