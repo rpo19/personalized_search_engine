@@ -135,16 +135,6 @@ class Helper {
     static basicQuery(host, index, corpus, hashtags, fuzzy, synonym,
         handleResults, handleErrors) {
 
-        const hashtags_boost_step = 0.80;
-
-        let hashtags_boost = hashtags_boost_step;
-        if (fuzzy) {
-            hashtags_boost += hashtags_boost_step;
-        }
-        if (synonym) {
-            hashtags_boost += 1.2;
-        }
-
         let corpus_should = [
             {
                 match: {
@@ -161,7 +151,6 @@ class Helper {
                 match: {
                     "entities.hashtags.text.raw": {
                         query: hashtags,
-                        boost: hashtags_boost,
                         analyzer: "whitespace"
                     }
                 }
@@ -170,7 +159,6 @@ class Helper {
                 match: {
                     "entities.hashtags.text": {
                         query: hashtags,
-                        boost: hashtags_boost,
                         analyzer: "english"
                     }
                 }
