@@ -48,7 +48,7 @@ By default `irconfig/local`; the docker container loads `irconfig/docker`.
 Put your twitter API credentials into `irconfig/secrets.yaml`.
 Take a look at the sample `irconfig/secrets-sample.txt`.
 
-Otherwise you could import tweets from a previously created dump. (See IRengine section)
+Otherwise you could import tweets from a previously created **dump**. (See IRengine section)
 
 ## Setup
 
@@ -79,6 +79,12 @@ You need Docker (https://docs.docker.com/get-docker/) and Compose
   from the project root.
 
 - Open http://localhost:8080/.
+
+- At the first start could happen that irengine fails before elasticsearch
+  starts. To restart irengine run
+  ```
+  docker-compose restart irengine
+  ```
 
 #### Run IRengine manually
 In case you need to run IRengine with custom arguments (e.g. to force users'
@@ -151,14 +157,17 @@ docker-compose run --rm -T irengine --help
       --help                          Show this message and exit.
   ```
 
-##### Get tweets from Twitter
+### Get tweets from Twitter
 
 Just set Twitter api credentials as seen in "Configuration/Twitter API" section;
 then simply run:
 ```
 python -m irengine            # to get tweets and ingest them into elastic
 ```
-Alternatively import tweets from a previously created dump:
+
+### Get tweets from a dump
+
+Alternatively import tweets from a previously created **dump**:
 
 - Excract the files from `data.zip`, then:
 
