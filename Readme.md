@@ -1,10 +1,13 @@
 # IRengine
 
+The `data.zip` contains a built of the frontend UI and the elasticsearch index
+dumps `usertweets.json` and `retrievalbase.json`.
+
 ## Components
 
 ### IRengine
 
-Python application which gets tweets from Twitter, ingest them into
+Python application which gets tweets from Twitter (or from a dump), ingest them into
 elasticsearch and creates users profiles.
 
 ### IRengine GUI
@@ -28,7 +31,14 @@ irconfig/
 ├── local
 │   └── local.yaml          # local specific config
 ├── secrets-sample.txt      # secrets sample
-└── secrets.yaml            # secrets config
+├── secrets.yaml            # secrets config
+├── mappings                # elasticsearch index mappings
+│   ├── tweets.json           # for retrievalbase and usertweets
+│   └── users.json            # for users
+├── synonym
+│   └── wn_s.pl             # WordNet synonyms
+├── retrievalbase.json      # retrievalbase dump (not required)
+└── usertweets.json         # usertweets dump (not required)
 ```
 
 By default `irconfig/local`; the docker container loads `irconfig/docker`.
@@ -116,7 +126,29 @@ docker-compose run --rm -T irengine --help
 
   ```
   python -m irengine --help     # see the help
-  # TODO mostrare help qui
+
+    Usage: __main__.py [OPTIONS]
+
+    IRengine
+
+    Python application which gets tweets from Twitter, ingest them into
+    elasticsearch and creates users profiles.
+
+    Options:
+      -c, --config-path TEXT          Config path
+      -p, --force-profile             Force user profile creation. Overwrite if
+                                      already exists.
+
+      -n, --no-tweets                 Skip Tweets download.
+      -t, --elasticseatch-wait-time INTEGER
+                                      Wait time for Elasticsearch to correctly
+                                      start in seconds.
+
+      --import-usertweets TEXT        ElasticDump json file containing usertweets
+      --import-retrievalbase TEXT     ElasticDump json file containing
+                                      retrievalbase
+
+      --help                          Show this message and exit.
   ```
 
 ##### Get tweets from Twitter
@@ -144,7 +176,7 @@ Alternatively import tweets from a previously created dump:
 - install `elasticdump` (See
   https://github.com/elasticsearch-dump/elasticsearch-dump)
 
-- Ensure `elasticdump_binary` in `default.yaml` contains the correct path of the elasticdump binary.
+- Ensure `elasticdump` is available in the path or that `elasticdump_binary` in `default.yaml` contains the correct path of the elasticdump binary.
 
 - Locate the dump files `usertweets.json` and `retrievalbase.json`
 
@@ -189,8 +221,6 @@ yarn run build
 and then you should see this folder `irengine-gui/build`.
 
 ##### Pre-built
-
-TODO fornire un pacchetto precompilato.
 
 Once you have a pre-built version extracted e.g. into a `build` folder:
 ```
