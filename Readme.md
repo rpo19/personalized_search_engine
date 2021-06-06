@@ -1,3 +1,12 @@
+# Intro
+
+The goal of this project is to define a search engine that enables user profiling and allows
+users to perform both standard searches as well as advanced and personalized ones.
+
+This Readme aims to help during the project setup. For a more in depth description of the project look at:
+- the report: [InformationRetrieval2021.pdf](InformationRetrieval2021.pdf)
+- and the presentation: [Information_Retrieval_Presentazione.pptx](Information_Retrieval_Presentazione.pptx)
+
 # IRengine
 
 The `data.zip` contains a built of the frontend UI and the elasticsearch index
@@ -99,7 +108,7 @@ docker-compose run --rm -T irengine --help
 
 - Install Elasticsearch 7 following the official documentation at
   https://www.elastic.co/guide/en/elasticsearch/reference/current/install-elasticsearch.html.
-  
+
 - Put synonyms file in `elasticsearch/config` folder; get it from
   `irconfig/synonym/wn_s.pl`.
 
