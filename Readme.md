@@ -1,4 +1,5 @@
 # Intro
+This is a project for the master course Information Retrieval from Università di Milano Bicocca.
 
 The goal of this project is to define a search engine that enables user profiling and allows
 users to perform both standard searches as well as advanced and personalized ones.
